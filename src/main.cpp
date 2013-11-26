@@ -32,13 +32,16 @@ int stereo = 0;
 int texID = 0;
 
 bool rotateLeft = false;
-//LPTSTR carPic = L"./car.bmp";
-char* monster = "./monsterTriang.obj";
+//char* monster = "./monsterTriang.obj";
+char* monster = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\monsterTriang.obj";
 OBJParser* monsterParser = new OBJParser();
-char* dolphin = "./DolphinTriangulated.obj";
+//char* dolphin = "./DolphinTriangulated.obj";
+char* dolphin = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\DolphinTriangulated.obj";
 OBJParser* dolphinParser = new OBJParser();
+//LPTSTR carPic = L"./car.bmp";
+LPTSTR carPic = L"c:\\users\\ben romney\\documents\\github\\dolphinattack\\textures\\car.bmp";
 
-//GLuint carTextID;
+GLuint carTextID;
 
 bool specialKeys[1000] = {0};
 
@@ -60,7 +63,7 @@ float rotPointY = 0.0;
 float rotPointZ = 0.0;
 
 float dolphinRotY = 55;
-//GLuint textures[2];
+GLuint textures[2];
 
 GLvoid HandleKeyboardInput();
 
@@ -120,8 +123,8 @@ GLvoid InitGL(){
 	glDepthFunc(GL_LEQUAL);								
 	glEnable(GL_COLOR_MATERIAL);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	//NeHeLoadBitmap(carPic,carTextID);
 	monsterParser->ParseOBJ(monster);
+	NeHeLoadBitmap(carPic,carTextID);
 	dolphinParser->ParseOBJ(dolphin);
 }
 
@@ -220,7 +223,7 @@ GLvoid DrawGLScene(){
 		glPushMatrix();
 			glTranslatef(dolphinTranX,0.0f,dolphinTranZ);
 			glRotatef(dolphinRotY,0.0f,1.0f,0.0f);
-			glBindTexture(GL_TEXTURE_2D,0);
+			glBindTexture(GL_TEXTURE_2D,carTextID);
 			glBegin(GL_TRIANGLES);
 				draw(dolphinParser);
 			glEnd();
