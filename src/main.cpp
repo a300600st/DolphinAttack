@@ -33,15 +33,15 @@ int texID = 0;
 
 bool rotateLeft = false;
 //char* monster = "./monsterTriang.obj";
-char* monster = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\monsterTriang.obj";
-OBJParser* monsterParser = new OBJParser();
-//char* dolphin = "./DolphinTriangulated.obj";
-char* dolphin = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\DolphinTriangulated.obj";
+//char* monster = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\monsterTriang.obj";
+//OBJParser* monsterParser = new OBJParser();
+//char* dolphin = "./Dolphin.obj";
+char* dolphin = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\Dolphin.obj";
 OBJParser* dolphinParser = new OBJParser();
 //LPTSTR carPic = L"./car.bmp";
-LPTSTR carPic = L"c:\\users\\ben romney\\documents\\github\\dolphinattack\\textures\\car.bmp";
+LPTSTR dolphinSkin = L"c:\\users\\ben romney\\documents\\github\\dolphinattack\\textures\\dolphinskin.bmp";
 
-GLuint carTextID;
+GLuint dolphinTextID;
 
 bool specialKeys[1000] = {0};
 
@@ -114,7 +114,7 @@ void CleanUp(){
 
 GLvoid InitGL(){
 	glShadeModel(GL_SMOOTH);							
-	glClearColor(0.5f, 0.5f, 0.5f, 0.5f);				
+	glClearColor(0.28f, 0.3f, 0.5f, 0.5f);				
 	glClearDepth(1.0f);									
 	glEnable(GL_DEPTH_TEST);							
 	glEnable(GL_TEXTURE_2D);
@@ -123,8 +123,8 @@ GLvoid InitGL(){
 	glDepthFunc(GL_LEQUAL);								
 	glEnable(GL_COLOR_MATERIAL);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	monsterParser->ParseOBJ(monster);
-	NeHeLoadBitmap(carPic,carTextID);
+	//monsterParser->ParseOBJ(monster);
+	NeHeLoadBitmap(dolphinSkin,dolphinTextID);
 	dolphinParser->ParseOBJ(dolphin);
 }
 
@@ -214,16 +214,16 @@ GLvoid DrawGLScene(){
 		glTranslatef(tranX,-1.0f,tranZ);
 		glColor3f(1.0f, 1.0f, 1.0f);
 
-		glPushMatrix();
+		/*glPushMatrix();
 			glBindTexture(GL_TEXTURE_2D,0);
 			glBegin(GL_TRIANGLES);
 				draw(monsterParser);
 			glEnd();
-		glPopMatrix();
+		glPopMatrix();*/
 		glPushMatrix();
 			glTranslatef(dolphinTranX,0.0f,dolphinTranZ);
 			glRotatef(dolphinRotY,0.0f,1.0f,0.0f);
-			glBindTexture(GL_TEXTURE_2D,carTextID);
+			glBindTexture(GL_TEXTURE_2D,dolphinTextID);
 			glBegin(GL_TRIANGLES);
 				draw(dolphinParser);
 			glEnd();
