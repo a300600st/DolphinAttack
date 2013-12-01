@@ -11,7 +11,6 @@
 #include "OBJParser.h"
 #include <string>
 #include <cmath>
-
 #include <iostream>
 
 using namespace std;
@@ -27,42 +26,43 @@ int windowWidth = DEFAULT_WINDOW_WIDTH;
 int windowHeight = DEFAULT_WINDOW_HEIGHT;
 char* windowName = "My Glut Window";
 
-int fullscreen = 0;
+int fullscreen = 1;
 int stereo = 0;
 int texID = 0;
 
-bool rotateLeft = false;
-//char* monster = "./monsterTriang.obj";
-//char* monster = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\monsterTriang.obj";
-//OBJParser* monsterParser = new OBJParser();
-//char* dolphin = "./Dolphin.obj";
 char* dolphin = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\Dolphin.obj";
 OBJParser* dolphinParser = new OBJParser();
-//LPTSTR carPic = L"./car.bmp";
 LPTSTR dolphinSkin = L"c:\\users\\ben romney\\documents\\github\\dolphinattack\\textures\\dolphinskin.bmp";
+char* arena = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\Arena.obj";
+OBJParser* arenaParser = new OBJParser();
+LPTSTR arenaTexture = L"c:\\users\\ben romney\\documents\\github\\dolphinattack\\textures\\arenatexture.bmp";
 
 GLuint dolphinTextID;
+GLuint arenaTextID;
 
 bool specialKeys[1000] = {0};
+bool* keyStates = new bool[256];
 
-float rotY = 0.0;
-float rotX = 0.0;
-float rotZ = 0.0;
 float tranY = 0.0;
 float tranX = 0.0;
 float tranZ = 0.0;
-bool* keyStates = new bool[256];
-float dolphinTranX = -2.0;
-float dolphinTranZ = -6.9;
+float rotY = 0.0;
+float rotX = 9.0;
+float rotZ = 0.0;
 
-bool leftTurn = false;
-bool rightTurn = false;
+float dolphinTranX = 0;
+float dolphinTranY = -13.0;
+float dolphinTranZ = -40;
+float dolphinRotX = 0.0;
+float dolphinRotY = 180.0;
 
-float rotPointX = 0.0;
-float rotPointY = 0.0;
-float rotPointZ = 0.0;
+float arenaTranX = -2.0;
+float arenaTranY = -190;
+float arenaTranZ = -6.9;
+float arenaScaleX = 100;
+float arenaScaleY = 100;
+float arenaScaleZ = 100;
 
-float dolphinRotY = 55;
 GLuint textures[2];
 
 GLvoid HandleKeyboardInput();
@@ -78,10 +78,8 @@ GLvoid SpecialKeysUp(int key, int x, int y);
 void CleanUp();
 
 #ifdef WIN32
-
 GLvoid PollJoyStick(GLvoid);
 bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid);
-
 #endif 
 
 int main(int argc, char* argv[]){
@@ -94,6 +92,7 @@ int main(int argc, char* argv[]){
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow(windowName);
+	glutFullScreen();
 
 	InitGL();
 
@@ -114,7 +113,7 @@ void CleanUp(){
 
 GLvoid InitGL(){
 	glShadeModel(GL_SMOOTH);							
-	glClearColor(0.28f, 0.3f, 0.5f, 0.5f);				
+	glClearColor(0.10f, 0.59f, 0.74f, 0.0f);				
 	glClearDepth(1.0f);									
 	glEnable(GL_DEPTH_TEST);							
 	glEnable(GL_TEXTURE_2D);
@@ -123,60 +122,64 @@ GLvoid InitGL(){
 	glDepthFunc(GL_LEQUAL);								
 	glEnable(GL_COLOR_MATERIAL);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	//monsterParser->ParseOBJ(monster);
 	NeHeLoadBitmap(dolphinSkin,dolphinTextID);
 	dolphinParser->ParseOBJ(dolphin);
+	NeHeLoadBitmap(arenaTexture,arenaTextID);
+	arenaParser->ParseOBJ(arena);
 }
 
 void updateValues()
 {
-	if(keyStates['a'])
-	{
-		tranX += 1 * cos(rotY * (M_PI / 180));
-		tranZ -= 1 * sin(-rotY * M_PI / 180);
-	}
-	if(keyStates['d'])
-	{
-		tranX -= 1 * cos(rotY * (M_PI / 180));
-		tranZ -= 1 * sin(rotY * M_PI / 180);
-	}
-	if(keyStates['w']){
-		tranZ += 1 * cos(rotY * (M_PI / 180));
-		tranX -= 1 * sin(rotY * M_PI / 180);
-	}
-	if(keyStates['s']){
-		tranZ -= 1 * cos(rotY * (M_PI / 180));
-		tranX -= 1 * sin(-rotY * M_PI / 180);
-	}
 	if(keyStates['k'])
 	{
-		rotY -= 3;
+		rotY += -3;
+		dolphinTranX -= 2.12*cos(rotY * (M_PI / 180));
+		dolphinTranZ += 2.12*sin(-rotY * (M_PI / 180));
+		dolphinRotY += 3;
 	}
 	if(keyStates[';'])
 	{
 		rotY += 3;
+		dolphinTranX += 2.12*cos(rotY * (M_PI / 180));
+		dolphinTranZ -= 2.12*sin(-rotY * (M_PI / 180));
+		dolphinRotY += -3;
 	}
 	if(keyStates['o'])
 	{
-		rotX -= 3;
+		rotX -= 1;
+		dolphinRotX -= -1;
 	}
 	if(keyStates['l'])
 	{
-		rotX += 3;
+		rotX += 1;
+		dolphinRotX += -1;
 	}
-	if(keyStates['j'])
+	if(keyStates['a'])
 	{
-		dolphinTranZ -= .15 * cos(dolphinRotY * (M_PI / 180));
-		dolphinTranX -= .15 * sin(dolphinRotY * M_PI / 180);
-
+		tranX += 2 * cos(rotY * (M_PI / 180));
+		tranZ -= 2 * sin(-rotY * M_PI / 180);
+		dolphinTranX += -2 * cos(rotY * (M_PI / 180));
+		dolphinTranZ -= -2 * sin(-rotY * M_PI / 180);
 	}
-	if(keyStates['m'])
+	if(keyStates['d'])
 	{
-		dolphinTranZ += .15 * cos(dolphinRotY * (M_PI / 180));
-		dolphinTranX += .15 * sin(dolphinRotY * M_PI / 180);
-
+		tranX -= 2 * cos(rotY * (M_PI / 180));
+		tranZ -= 2 * sin(rotY * M_PI / 180);
+		dolphinTranX -= -2 * cos(rotY * (M_PI / 180));
+		dolphinTranZ -= -2 * sin(rotY * M_PI / 180);
 	}
-
+	if(keyStates['w']){
+		tranZ += 3 * cos(rotY * (M_PI / 180));
+		tranX -= 3 * sin(rotY * M_PI / 180);
+		dolphinTranZ += 3 * cos(dolphinRotY * (M_PI / 180));
+		dolphinTranX += 3 * sin(dolphinRotY * M_PI / 180);
+	}
+	if(keyStates['s']){
+		tranZ -= 3 * cos(rotY * (M_PI / 180));
+		tranX -= 3 * sin(-rotY * M_PI / 180);
+		dolphinTranZ -= 3 * cos(dolphinRotY * (M_PI / 180));
+		dolphinTranX -= 3 * sin(dolphinRotY * M_PI / 180);
+	}
 }
 
 void draw(OBJParser * parser)
@@ -202,34 +205,32 @@ GLvoid DrawGLScene(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	
-#ifdef WIN32
+	updateValues();
+	glViewport(0, 0, windowWidth, windowHeight);
+	glRotatef(rotX,1.0f,0.0f,0.0f);
+	glRotatef(rotY,0.0f,1.0f,0.0f);
+	glRotatef(rotZ,0.0f,0.0f,1.0f);
+	glTranslatef(tranX,-1.0f,tranZ);
+	glColor3f(1.0f, 1.0f, 1.0f);
 
-#endif // WIN32
-		updateValues();
-		glViewport(0, 0, windowWidth, windowHeight);
-		glRotatef(rotX,1.0f,0.0f,0.0f);
-		glRotatef(rotY,0.0f,1.0f,0.0f);
-		glRotatef(rotZ,0.0f,0.0f,1.0f);
-		glTranslatef(tranX,-1.0f,tranZ);
-		glColor3f(1.0f, 1.0f, 1.0f);
+	glPushMatrix();
+		glTranslatef(arenaTranX,arenaTranY,arenaTranZ);
+		glScalef(arenaScaleX,arenaScaleY,arenaScaleZ);
+		glBindTexture(GL_TEXTURE_2D,arenaTextID);
+		glBegin(GL_TRIANGLES);
+			draw(arenaParser);
+		glEnd();
+	glPopMatrix();
 
-		/*glPushMatrix();
-			glBindTexture(GL_TEXTURE_2D,0);
-			glBegin(GL_TRIANGLES);
-				draw(monsterParser);
-			glEnd();
-		glPopMatrix();*/
-		glPushMatrix();
-			glTranslatef(dolphinTranX,0.0f,dolphinTranZ);
-			glRotatef(dolphinRotY,0.0f,1.0f,0.0f);
-			glBindTexture(GL_TEXTURE_2D,dolphinTextID);
-			glBegin(GL_TRIANGLES);
-				draw(dolphinParser);
-			glEnd();
-		glPopMatrix();
-#ifdef WIN32
-#endif 
+	glPushMatrix();
+		glTranslatef(dolphinTranX,dolphinTranY,dolphinTranZ);
+		glRotatef(dolphinRotX,1.0f,0.0f,0.0f);
+		glRotatef(dolphinRotY,0.0f,1.0f,0.0f);
+		glBindTexture(GL_TEXTURE_2D,dolphinTextID);
+		glBegin(GL_TRIANGLES);
+			draw(dolphinParser);
+		glEnd();
+	glPopMatrix();
 
 	glFlush();
 	glutSwapBuffers();
@@ -262,7 +263,6 @@ GLvoid ReSizeGLScene(int width, int height){
 GLvoid GLKeyDown(unsigned char key, int x, int y){
 	if(key == KEYBOARD_ESC)
 		exit(0);
-
 	if(key == KEYBOARD_F){
 		if(stereo)
 			return;
