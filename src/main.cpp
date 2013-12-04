@@ -12,6 +12,8 @@
 #include <string>
 #include <cmath>
 #include <iostream>
+#include <windows.h>
+
 #using <System.Drawing.dll>
 #using <System.dll>
 #using <System.Windows.Forms.dll>
@@ -94,6 +96,13 @@ GLvoid PollJoyStick(GLvoid);
 bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid);
 #endif 
 
+void startBackgroundMusic(){
+	System::Media::SoundPlayer^ backgroundmusic = gcnew System::Media::SoundPlayer();
+	backgroundmusic->SoundLocation = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\audio\\backgroundmusic.wav";
+	backgroundmusic->Load();
+	backgroundmusic->PlayLooping();
+}
+
 int main(int argc, char* argv[]){
 	for(int i = 0; i < 256; i++)
 	{
@@ -105,6 +114,7 @@ int main(int argc, char* argv[]){
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow(windowName);
 	glutFullScreen();
+	startBackgroundMusic();
 
 	InitGL();
 
