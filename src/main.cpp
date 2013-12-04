@@ -12,14 +12,20 @@
 #include <string>
 #include <cmath>
 #include <iostream>
+#using <System.Drawing.dll>
+#using <System.dll>
+#using <System.Windows.Forms.dll>
 
 using namespace std;
+using namespace System;
+using namespace System::Media;
 
 #define DEFAULT_WINDOW_WIDTH 640
 #define DEFAULT_WINDOW_HEIGHT 480
 #define KEYBOARD_S 115
 #define KEYBOARD_ESC 27
 #define KEYBOARD_ENTER 13
+#define KEYBOARD_SPACE 32
 #define KEYBOARD_F 102
 #define KEYBOARD_N 110
 
@@ -73,7 +79,6 @@ float arenaScaleY = 100;
 float arenaScaleZ = 100;
 
 GLvoid HandleKeyboardInput();
-
 GLvoid InitGL(GLvoid);
 GLvoid DrawGLScene(GLvoid);
 GLvoid IdleGLScene(GLvoid);
@@ -190,6 +195,12 @@ void updateValues()
 			tranX -= 3 * sin(-rotY * M_PI / 180);
 			dolphinTranZ -= 3 * cos(dolphinRotY * (M_PI / 180));
 			dolphinTranX -= 3 * sin(dolphinRotY * M_PI / 180);
+		}
+		if(keyStates[KEYBOARD_SPACE]){
+			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
+			dolphinlaugh->SoundLocation = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\audio\\dolphinlaugh.wav";
+			dolphinlaugh->Load();
+			dolphinlaugh->Play();
 		}
 	}
 }
