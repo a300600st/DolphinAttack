@@ -39,15 +39,15 @@ int fullscreen = 1;
 int stereo = 0;
 int texID = 0;
 
-char* title = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\Title.obj";
+char* title = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj";
 OBJParser* titleParser = new OBJParser();
-LPTSTR titleTexture = L"c:\\users\\ben romney\\documents\\github\\dolphinattack\\textures\\titletexture.bmp";
-char* dolphin = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\Dolphin.obj";
+LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
+char* dolphin = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj";
 OBJParser* dolphinParser = new OBJParser();
-LPTSTR dolphinSkin = L"c:\\users\\ben romney\\documents\\github\\dolphinattack\\textures\\dolphinskin.bmp";
-char* arena = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\models\\Arena.obj";
+LPTSTR dolphinSkin = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\dolphinskin.bmp";
+char* arena = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Arena.obj";
 OBJParser* arenaParser = new OBJParser();
-LPTSTR arenaTexture = L"c:\\users\\ben romney\\documents\\github\\dolphinattack\\textures\\arenatexture.bmp";
+LPTSTR arenaTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\arenatexture.bmp";
 
 GLuint textures[3];
 
@@ -98,7 +98,7 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid);
 
 void startBackgroundMusic(){
 	System::Media::SoundPlayer^ backgroundmusic = gcnew System::Media::SoundPlayer();
-	backgroundmusic->SoundLocation = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\audio\\backgroundmusic.wav";
+	backgroundmusic->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\backgroundmusic.wav";
 	backgroundmusic->Load();
 	backgroundmusic->PlayLooping();
 }
@@ -208,7 +208,7 @@ void updateValues()
 		}
 		if(keyStates[KEYBOARD_SPACE]){
 			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-			dolphinlaugh->SoundLocation = "c:\\users\\ben romney\\documents\\github\\dolphinattack\\audio\\dolphinlaugh.wav";
+			dolphinlaugh->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav";
 			dolphinlaugh->Load();
 			dolphinlaugh->Play();
 		}
