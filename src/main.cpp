@@ -39,26 +39,29 @@ int fullscreen = 1;
 int stereo = 0;
 int texID = 0;
 
-char* title = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Title.obj";
+// C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack
+// C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
+
+char* title = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj";
 OBJParser* titleParser = new OBJParser();
-LPTSTR titleTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\titletexture.bmp";
+LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
 
-char* dolphin = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Dolphin.obj";
+char* dolphin = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj";
 OBJParser* dolphinParser = new OBJParser();
-LPTSTR dolphinSkin = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\dolphinskin.bmp";
+LPTSTR dolphinSkin = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\dolphinskin.bmp";
 
-char* arena = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Arena.obj";
+char* arena = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Arena.obj";
 OBJParser* arenaParser = new OBJParser();
-LPTSTR arenaTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\arenatexture.bmp";
+LPTSTR arenaTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\arenatexture.bmp";
 
-char* sky = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Sky.obj";
+char* sky = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sky.obj";
 OBJParser* skyParser = new OBJParser();
-LPTSTR skyTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\skytexture.bmp";
+LPTSTR skyTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\skytexture.bmp";
 
-char* sun = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Sun.obj";
+char* sun = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sun.obj";
 OBJParser* sunParser = new OBJParser();
-LPTSTR sunSmileTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\sunsmile.bmp";
-LPTSTR sunGaspTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\sungasp.bmp";
+LPTSTR sunSmileTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sunsmile.bmp";
+LPTSTR sunGaspTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sungasp.bmp";
 
 GLuint textures[6];
 
@@ -73,30 +76,31 @@ GLuint sunTextID;
 bool specialKeys[1000] = {0};
 bool* keyStates = new bool[256];
 
-float tranY = 0.0;
 float tranX = 0.0;
+float tranY = 0.0;
 float tranZ = 0.0;
 float rotY = 0.0;
-float rotX = 9.0;
+float rotX = -3.0;
 float rotZ = 0.0;
 
 bool InMainMenu = true;
 
 float dolphinTranX = 0;
-float dolphinTranY = -13.0;
+float dolphinTranY = -11.0;
 float dolphinTranZ = -40;
 float dolphinRotX = 0.0;
 float dolphinRotY = 180.0;
+float dolphinRotZ = 0.0;
 
 float arenaTranX = -2.0;
-float arenaTranY = -190;
+float arenaTranY = -188;
 float arenaTranZ = -6.9;
 float arenaScaleX = 100;
 float arenaScaleY = 100;
 float arenaScaleZ = 100;
 
 float skyTranX = -2.0;
-float skyTranY = -190;
+float skyTranY = -183;
 float skyTranZ = -6.9;
 float skyScaleX = 100;
 float skyScaleY = 100;
@@ -129,7 +133,7 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid);
 
 void startBackgroundMusic(){
 	System::Media::SoundPlayer^ backgroundmusic = gcnew System::Media::SoundPlayer();
-	backgroundmusic->SoundLocation = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\audio\\backgroundmusic.wav";
+	backgroundmusic->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\backgroundmusic.wav";
 	backgroundmusic->Load();
 	backgroundmusic->PlayLooping();
 }
@@ -174,9 +178,7 @@ int main(int argc, char* argv[]){
 	glutSpecialFunc(SpecialKeys);
 	glutSpecialUpFunc(SpecialKeysUp);
 	glutSetCursor(GLUT_CURSOR_NONE);
-
 	timer(0);
-
 	glutMainLoop();
 
 	return 0;
@@ -212,7 +214,7 @@ GLvoid InitGL(){
 void updateValues()
 {
 	if (!InMainMenu) {
-		if(keyStates['k'])
+		/*if(keyStates['k'])
 		{
 			rotY += -3;
 			dolphinTranX -= 2.12*cos(rotY * (M_PI / 180));
@@ -277,8 +279,7 @@ void updateValues()
 			skyTranX -= 3 * sin(dolphinRotY * M_PI / 180);
 			sunTranZ -= 3 * cos(dolphinRotY * (M_PI / 180));
 			sunTranX -= 3 * sin(dolphinRotY * M_PI / 180);
-		}
-
+		}*/
 		if(keyStates['g']){
 			sunTextID = sunGaspTextID;
 		}
@@ -287,7 +288,7 @@ void updateValues()
 		}
 		if(keyStates[KEYBOARD_SPACE]){
 			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-			dolphinlaugh->SoundLocation = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\audio\\dolphinlaugh.wav";
+			dolphinlaugh->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav";
 			dolphinlaugh->Load();
 			dolphinlaugh->Play();
 		}
@@ -321,15 +322,15 @@ GLvoid DrawGLScene(){
 	if (InMainMenu) {
 
 		glViewport(0, 0, windowWidth, windowHeight);
-		glRotatef(rotX-15,1.0f,0.0f,0.0f);
+		glRotatef(rotX-10,1.0f,0.0f,0.0f);
 		glRotatef(rotY,0.0f,1.0f,0.0f);
 		glRotatef(rotZ,0.0f,0.0f,1.0f);
-		glTranslatef(tranX,-1.0f,tranZ);
+		glTranslatef(tranX,tranY,tranZ);
 
 		glPushMatrix();
-			glTranslatef(0,8.3,-30);
+			glTranslatef(0,10,-30);
 			glScalef(1.6,1.4,1.5);
-			glRotatef(95,1.0f,0.0f,0.0f);
+			glRotatef(102,1.0f,0.0f,0.0f);
 			glRotatef(180,0.0f,1.0f,0.0f);
 			glBindTexture(GL_TEXTURE_2D,titleTextID);
 			glBegin(GL_TRIANGLES);
@@ -369,10 +370,12 @@ GLvoid DrawGLScene(){
 	} else { // In Game
 
 		glViewport(0, 0, windowWidth, windowHeight);
+		glTranslatef(0, 0, -40);
 		glRotatef(rotX,1.0f,0.0f,0.0f);
 		glRotatef(rotY,0.0f,1.0f,0.0f);
 		glRotatef(rotZ,0.0f,0.0f,1.0f);
-		glTranslatef(tranX,-1.0f,tranZ);
+		glTranslatef(0, 0, 40);
+		glTranslatef(tranX,tranY,tranZ);
 
 		glPushMatrix();
 			glTranslatef(arenaTranX,arenaTranY,arenaTranZ);
@@ -403,13 +406,15 @@ GLvoid DrawGLScene(){
 
 		glPushMatrix();
 			glTranslatef(dolphinTranX,dolphinTranY,dolphinTranZ);
-			glRotatef(dolphinRotX,1.0f,0.0f,0.0f);
 			glRotatef(dolphinRotY,0.0f,1.0f,0.0f);
+			glRotatef(dolphinRotX,1.0f,0.0f,0.0f);
+			glRotatef(dolphinRotZ,0.0f,0.0f,1.0f);
 			glBindTexture(GL_TEXTURE_2D,dolphinTextID);
 			glBegin(GL_TRIANGLES);
 				draw(dolphinParser);
 			glEnd();
 		glPopMatrix();
+
 		glPushMatrix();
 			glDisable(GL_TEXTURE_2D);
 			//glColor3f(1, 0, 0);
@@ -441,9 +446,9 @@ GLvoid ReSizeGLScene(int width, int height){
 	glLoadIdentity();
 
 	if(stereo)
-		gluPerspective(45.0f, (GLfloat)width/((GLfloat)height * 2.0f), 0.1f, 2000.0f);
+		gluPerspective(45.0f, (GLfloat)width/((GLfloat)height * 2.0f), 0.1f, 2200.0f);
 	else
-		gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2000.0f);
+		gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2200.0f);
 
 	windowWidth = width;
 	windowHeight = height;
@@ -456,7 +461,7 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 		exit(0);
 	if(key == KEYBOARD_ENTER)
 		InMainMenu = false;
-	/*if(key == KEYBOARD_F){
+	if(key == KEYBOARD_F){
 		if(stereo)
 			return;
 		if(fullscreen){
@@ -468,7 +473,7 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 			glutFullScreen();
 			fullscreen = 1;
 		}
-	}*/
+	}
 	keyStates[key] = true;
 
 #ifdef WIN32
@@ -540,13 +545,36 @@ GLvoid SpecialKeysUp(int key, int x, int y){
 
 GLvoid HandleKeyboardInput(){
 	if(specialKeys[GLUT_KEY_LEFT]){
-		std::cout << "Key left pressed" << std::endl;
+		rotY += -3;
+		dolphinRotY += 3;
+		dolphinRotZ = -5;
 	}
 	if(specialKeys[GLUT_KEY_RIGHT]){
-		std::cout << "Key right pressed" << std::endl;
+		rotY += 3;
+		dolphinRotY += -3;
+		dolphinRotZ = 5;
 	}
 	if(specialKeys[GLUT_KEY_UP]){
-		std::cout << "Key Up pressed" << std::endl;
+		tranZ += 3 * cos(rotY * (M_PI / 180));
+		tranX -= 3 * sin(rotY * M_PI / 180);
+		dolphinTranZ += 3 * cos(dolphinRotY * (M_PI / 180));
+		dolphinTranX += 3 * sin(dolphinRotY * M_PI / 180);
+		skyTranZ += 3 * cos(dolphinRotY * (M_PI / 180));
+		skyTranX += 3 * sin(dolphinRotY * M_PI / 180);
+		sunTranZ += 3 * cos(dolphinRotY * (M_PI / 180));
+		sunTranX += 3 * sin(dolphinRotY * M_PI / 180);
+		dolphinRotX = -5;
+	}
+	if(specialKeys[GLUT_KEY_DOWN]){
+		tranZ -= 1 * cos(rotY * (M_PI / 180));
+		tranX -= 1 * sin(-rotY * M_PI / 180);
+		dolphinTranZ -= 1 * cos(dolphinRotY * (M_PI / 180));
+		dolphinTranX -= 1 * sin(dolphinRotY * M_PI / 180);
+		skyTranZ -= 1 * cos(dolphinRotY * (M_PI / 180));
+		skyTranX -= 1 * sin(dolphinRotY * M_PI / 180);
+		sunTranZ -= 1 * cos(dolphinRotY * (M_PI / 180));
+		sunTranX -= 1 * sin(dolphinRotY * M_PI / 180);
+		dolphinRotX = 1;
 	}
 }
 
