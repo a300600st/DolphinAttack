@@ -39,21 +39,36 @@ int fullscreen = 1;
 int stereo = 0;
 int texID = 0;
 
-char* title = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj";
+char* title = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj";
 OBJParser* titleParser = new OBJParser();
-LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
-char* dolphin = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj";
-OBJParser* dolphinParser = new OBJParser();
-LPTSTR dolphinSkin = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\dolphinskin.bmp";
-char* arena = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Arena.obj";
-OBJParser* arenaParser = new OBJParser();
-LPTSTR arenaTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\arenatexture.bmp";
+LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
 
-GLuint textures[3];
+char* dolphin = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj";
+OBJParser* dolphinParser = new OBJParser();
+LPTSTR dolphinSkin = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\dolphinskin.bmp";
+
+char* arena = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Arena.obj";
+OBJParser* arenaParser = new OBJParser();
+LPTSTR arenaTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\arenatexture.bmp";
+
+char* sky = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sky.obj";
+OBJParser* skyParser = new OBJParser();
+LPTSTR skyTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\skytexture.bmp";
+
+char* sun = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sun.obj";
+OBJParser* sunParser = new OBJParser();
+LPTSTR sunSmileTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sunsmile.bmp";
+LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sungasp.bmp";
+
+GLuint textures[6];
 
 GLuint titleTextID;
 GLuint dolphinTextID;
 GLuint arenaTextID;
+GLuint skyTextID;
+GLuint sunSmileTextID;
+GLuint sunGaspTextID;
+GLuint sunTextID;
 
 bool specialKeys[1000] = {0};
 bool* keyStates = new bool[256];
@@ -80,6 +95,20 @@ float arenaScaleX = 100;
 float arenaScaleY = 100;
 float arenaScaleZ = 100;
 
+float skyTranX = -2.0;
+float skyTranY = -190;
+float skyTranZ = -6.9;
+float skyScaleX = 100;
+float skyScaleY = 100;
+float skyScaleZ = 100;
+
+float sunTranX = -2.0;
+float sunTranY = -190;
+float sunTranZ = -6.9;
+float sunScaleX = 100;
+float sunScaleY = 100;
+float sunScaleZ = 100;
+
 GLvoid HandleKeyboardInput();
 GLvoid InitGL(GLvoid);
 GLvoid DrawGLScene(GLvoid);
@@ -98,7 +127,7 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid);
 
 void startBackgroundMusic(){
 	System::Media::SoundPlayer^ backgroundmusic = gcnew System::Media::SoundPlayer();
-	backgroundmusic->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\backgroundmusic.wav";
+	backgroundmusic->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\backgroundmusic.wav";
 	backgroundmusic->Load();
 	backgroundmusic->PlayLooping();
 }
@@ -151,6 +180,11 @@ GLvoid InitGL(){
 	dolphinParser->ParseOBJ(dolphin);
 	NeHeLoadBitmap(arenaTexture,arenaTextID);
 	arenaParser->ParseOBJ(arena);
+	NeHeLoadBitmap(skyTexture,skyTextID);
+	skyParser->ParseOBJ(sky);
+	NeHeLoadBitmap(sunSmileTexture,sunSmileTextID);
+	NeHeLoadBitmap(sunGaspTexture,sunGaspTextID);
+	sunParser->ParseOBJ(sun);
 }
 
 void updateValues()
@@ -186,6 +220,10 @@ void updateValues()
 			tranZ -= 2 * sin(-rotY * M_PI / 180);
 			dolphinTranX += -2 * cos(rotY * (M_PI / 180));
 			dolphinTranZ -= -2 * sin(-rotY * M_PI / 180);
+			skyTranX += -2 * cos(rotY * (M_PI / 180));
+			skyTranZ -= -2 * sin(-rotY * M_PI / 180);
+			sunTranX += -2 * cos(rotY * (M_PI / 180));
+			sunTranZ -= -2 * sin(-rotY * M_PI / 180);
 		}
 		if(keyStates['d'])
 		{
@@ -193,22 +231,41 @@ void updateValues()
 			tranZ -= 2 * sin(rotY * M_PI / 180);
 			dolphinTranX -= -2 * cos(rotY * (M_PI / 180));
 			dolphinTranZ -= -2 * sin(rotY * M_PI / 180);
+			skyTranX -= -2 * cos(rotY * (M_PI / 180));
+			skyTranZ -= -2 * sin(rotY * M_PI / 180);
+			sunTranX -= -2 * cos(rotY * (M_PI / 180));
+			sunTranZ -= -2 * sin(rotY * M_PI / 180);
 		}
 		if(keyStates['w']){
 			tranZ += 3 * cos(rotY * (M_PI / 180));
 			tranX -= 3 * sin(rotY * M_PI / 180);
 			dolphinTranZ += 3 * cos(dolphinRotY * (M_PI / 180));
 			dolphinTranX += 3 * sin(dolphinRotY * M_PI / 180);
+			skyTranZ += 3 * cos(dolphinRotY * (M_PI / 180));
+			skyTranX += 3 * sin(dolphinRotY * M_PI / 180);
+			sunTranZ += 3 * cos(dolphinRotY * (M_PI / 180));
+			sunTranX += 3 * sin(dolphinRotY * M_PI / 180);
 		}
 		if(keyStates['s']){
 			tranZ -= 3 * cos(rotY * (M_PI / 180));
 			tranX -= 3 * sin(-rotY * M_PI / 180);
 			dolphinTranZ -= 3 * cos(dolphinRotY * (M_PI / 180));
 			dolphinTranX -= 3 * sin(dolphinRotY * M_PI / 180);
+			skyTranZ -= 3 * cos(dolphinRotY * (M_PI / 180));
+			skyTranX -= 3 * sin(dolphinRotY * M_PI / 180);
+			sunTranZ -= 3 * cos(dolphinRotY * (M_PI / 180));
+			sunTranX -= 3 * sin(dolphinRotY * M_PI / 180);
+		}
+
+		if(keyStates['g']){
+			sunTextID = sunGaspTextID;
+		}
+		else {
+			sunTextID = sunSmileTextID;
 		}
 		if(keyStates[KEYBOARD_SPACE]){
 			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-			dolphinlaugh->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav";
+			dolphinlaugh->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav";
 			dolphinlaugh->Load();
 			dolphinlaugh->Play();
 		}
@@ -268,6 +325,15 @@ GLvoid DrawGLScene(){
 		glPopMatrix();
 
 		glPushMatrix();
+			glTranslatef(skyTranX,skyTranY,skyTranZ);
+			glScalef(skyScaleX,skyScaleY,skyScaleZ);
+			glBindTexture(GL_TEXTURE_2D,skyTextID);
+			glBegin(GL_TRIANGLES);
+				draw(skyParser);
+			glEnd();
+		glPopMatrix();
+
+		glPushMatrix();
 			glTranslatef(1.2,-5.4,-20);
 			glRotatef(-30,1.0f,0.0f,0.0f);
 			glRotatef(-40,0.0f,1.0f,0.0f);
@@ -292,6 +358,24 @@ GLvoid DrawGLScene(){
 			glBindTexture(GL_TEXTURE_2D,arenaTextID);
 			glBegin(GL_TRIANGLES);
 				draw(arenaParser);
+			glEnd();
+		glPopMatrix();
+
+		glPushMatrix();
+			glTranslatef(skyTranX,skyTranY,skyTranZ);
+			glScalef(skyScaleX,skyScaleY,skyScaleZ);
+			glBindTexture(GL_TEXTURE_2D,skyTextID);
+			glBegin(GL_TRIANGLES);
+				draw(skyParser);
+			glEnd();
+		glPopMatrix();
+
+		glPushMatrix();
+			glTranslatef(sunTranX,sunTranY,sunTranZ);
+			glScalef(sunScaleX,sunScaleY,sunScaleZ);
+			glBindTexture(GL_TEXTURE_2D,sunTextID);
+			glBegin(GL_TRIANGLES);
+				draw(sunParser);
 			glEnd();
 		glPopMatrix();
 
