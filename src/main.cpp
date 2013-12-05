@@ -39,26 +39,26 @@ int fullscreen = 1;
 int stereo = 0;
 int texID = 0;
 
-char* title = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj";
+char* title = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Title.obj";
 OBJParser* titleParser = new OBJParser();
-LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
+LPTSTR titleTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\titletexture.bmp";
 
-char* dolphin = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj";
+char* dolphin = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Dolphin.obj";
 OBJParser* dolphinParser = new OBJParser();
-LPTSTR dolphinSkin = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\dolphinskin.bmp";
+LPTSTR dolphinSkin = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\dolphinskin.bmp";
 
-char* arena = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Arena.obj";
+char* arena = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Arena.obj";
 OBJParser* arenaParser = new OBJParser();
-LPTSTR arenaTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\arenatexture.bmp";
+LPTSTR arenaTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\arenatexture.bmp";
 
-char* sky = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sky.obj";
+char* sky = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Sky.obj";
 OBJParser* skyParser = new OBJParser();
-LPTSTR skyTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\skytexture.bmp";
+LPTSTR skyTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\skytexture.bmp";
 
-char* sun = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sun.obj";
+char* sun = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\Sun.obj";
 OBJParser* sunParser = new OBJParser();
-LPTSTR sunSmileTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sunsmile.bmp";
-LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sungasp.bmp";
+LPTSTR sunSmileTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\sunsmile.bmp";
+LPTSTR sunGaspTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\sungasp.bmp";
 
 GLuint textures[6];
 
@@ -108,6 +108,8 @@ float sunTranZ = -6.9;
 float sunScaleX = 100;
 float sunScaleY = 100;
 float sunScaleZ = 100;
+int timeLeft = 99;  //TIMER FOR HOW LONG THE GAME LASTs
+char time[2];
 
 GLvoid HandleKeyboardInput();
 GLvoid InitGL(GLvoid);
@@ -127,9 +129,26 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid);
 
 void startBackgroundMusic(){
 	System::Media::SoundPlayer^ backgroundmusic = gcnew System::Media::SoundPlayer();
-	backgroundmusic->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\backgroundmusic.wav";
+	backgroundmusic->SoundLocation = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\audio\\backgroundmusic.wav";
 	backgroundmusic->Load();
 	backgroundmusic->PlayLooping();
+}
+
+
+static void timer(int value)
+{
+	if(timeLeft > 0)
+	{
+		timeLeft--;
+		itoa(timeLeft,time,10);
+		glutPostRedisplay();
+		glutTimerFunc(1000, timer, 0);
+	}
+	else
+	{
+		std::cout<<"Game Over"<<endl;
+		//system("pause");
+	}
 }
 
 int main(int argc, char* argv[]){
@@ -155,6 +174,9 @@ int main(int argc, char* argv[]){
 	glutSpecialFunc(SpecialKeys);
 	glutSpecialUpFunc(SpecialKeysUp);
 	glutSetCursor(GLUT_CURSOR_NONE);
+
+	timer(0);
+
 	glutMainLoop();
 
 	return 0;
@@ -265,7 +287,7 @@ void updateValues()
 		}
 		if(keyStates[KEYBOARD_SPACE]){
 			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-			dolphinlaugh->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav";
+			dolphinlaugh->SoundLocation = "C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\audio\\dolphinlaugh.wav";
 			dolphinlaugh->Load();
 			dolphinlaugh->Play();
 		}
@@ -387,6 +409,17 @@ GLvoid DrawGLScene(){
 			glBegin(GL_TRIANGLES);
 				draw(dolphinParser);
 			glEnd();
+		glPopMatrix();
+		glPushMatrix();
+			glDisable(GL_TEXTURE_2D);
+			//glColor3f(1, 0, 0);
+			glRasterPos2f(0,0);
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[0]);
+			if(timeLeft > 9)
+			{
+				glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[1]);
+			}
+			glEnable(GL_TEXTURE_2D);
 		glPopMatrix();
 	}
 
