@@ -36,7 +36,15 @@ public:
 	Vector3f scale;
 	Vector3f translation;
 
+	int rotateFirst;
+	int rotateSecond;
+	int rotateThird;
+
 	DrawObject(char*);
+	DrawObject(char*, int, int, int);
+
+private:
+	void Init(char*, int, int, int);
 };
 
 #endif

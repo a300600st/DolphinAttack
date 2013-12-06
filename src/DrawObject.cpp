@@ -1,6 +1,18 @@
 #include "DrawObject.h"
 
+DrawObject::DrawObject(char* fileName, int rotateFirst, int rotateSecond, int rotateThird)
+{
+	Init(fileName, rotateFirst, rotateSecond, rotateThird);
+}
+
 DrawObject::DrawObject(char* fileName){
+	Init(fileName, 0, 1, 2);
+}
+
+void DrawObject::Init(char* fileName, int rotateFirst, int rotateSecond, int rotateThird){
+	this->rotateFirst = rotateFirst;
+	this->rotateSecond = rotateSecond;
+	this->rotateThird = rotateThird;
 	this->translation = Vector3f(0, 0, 0);
 	this->scale = Vector3f(1, 1, 1);
 	this->rotation = Vector3f(0, 0, 0);

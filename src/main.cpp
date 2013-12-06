@@ -38,6 +38,10 @@ int fullscreen = 1;
 int stereo = 0;
 int texID = 0;
 
+// C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack
+// C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
+// C:\\Users\\Ryan\\Documents\\DolphinAttack
+
 DrawObject* title = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj");
 LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
 
@@ -71,14 +75,16 @@ GLuint swimmerTextID;
 bool specialKeys[1000] = {0};
 bool* keyStates = new bool[256];
 
-float tranY = 0.0;
 float tranX = 0.0;
+float tranY = 0.0;
 float tranZ = 0.0;
 float rotY = 0.0;
-float rotX = 9.0;
+float rotX = -3.0;
 float rotZ = 0.0;
 
 bool InMainMenu = true;
+int timeLeft = 99;  //TIMER FOR HOW LONG THE GAME LASTs
+char time[2];
 
 GLvoid HandleKeyboardInput();
 GLvoid InitGL(GLvoid);
@@ -101,6 +107,23 @@ void startBackgroundMusic(){
 	backgroundmusic->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\backgroundmusic.wav";
 	backgroundmusic->Load();
 	backgroundmusic->PlayLooping();
+}
+
+
+static void timer(int value)
+{
+	if(timeLeft > 0)
+	{
+		timeLeft--;
+		itoa(timeLeft,time,10);
+		glutPostRedisplay();
+		glutTimerFunc(1000, timer, 0);
+	}
+	else
+	{
+		std::cout<<"Game Over"<<endl;
+		//system("pause");
+	}
 }
 
 int main(int argc, char* argv[]){
@@ -126,6 +149,7 @@ int main(int argc, char* argv[]){
 	glutSpecialFunc(SpecialKeys);
 	glutSpecialUpFunc(SpecialKeysUp);
 	glutSetCursor(GLUT_CURSOR_NONE);
+	timer(0);
 	glutMainLoop();
 
 	return 0;
@@ -156,27 +180,27 @@ GLvoid InitGL(){
 	dolphin->rotation = Vector3f(-30, -40, -20);
 
 	NeHeLoadBitmap(arenaTexture,arenaTextID);
-	arena->translation = Vector3f(0, -190, -6.9);
+	arena->translation = Vector3f(0, -188, -6.9);
 	arena->scale = Vector3f(100, 100, 100);
 
 	NeHeLoadBitmap(skyTexture,skyTextID);
-	sky->translation = Vector3f(0, -190 , -6.9);
+	sky->translation = Vector3f(0, -188 , -6.9);
 	sky->scale = Vector3f(100, 100, 100);
 
 	NeHeLoadBitmap(sunSmileTexture,sunSmileTextID);
 	NeHeLoadBitmap(sunGaspTexture,sunGaspTextID);
-	sun->translation = Vector3f(0, -190, -6.9);
+	sun->translation = Vector3f(0, -188, -6.9);
 	sun->scale = Vector3f(100, 100, 100);
 
 	NeHeLoadBitmap(swimmerTexture,swimmerTextID);
-	swimmer->translation = Vector3f(0, -190, -6.9);
+	swimmer->translation = Vector3f(0, -188, -6.9);
 	swimmer->scale = Vector3f(100, 100, 100);
 }
 
 void updateValues()
 {
 	if (!InMainMenu) {
-		if(keyStates['k'])
+		/*if(keyStates['k'])
 		{
 			rotY += -3;
 			dolphin->translation.x -= 2.12*cos(rotY * (M_PI / 180));
@@ -241,7 +265,7 @@ void updateValues()
 			sky->translation.x -= 3 * sin(dolphin->rotation.y * M_PI / 180);
 			sun->translation.z -= 3 * cos(dolphin->rotation.y * (M_PI / 180));
 			sun->translation.x -= 3 * sin(dolphin->rotation.y * M_PI / 180);
-		}
+		}*/
 
 		if(keyStates['g']){
 			sunTextID = sunGaspTextID;
@@ -262,9 +286,43 @@ void draw(DrawObject * object, GLuint textID)
 {
 	glTranslatef(object->translation.x, object->translation.y, object->translation.z);
 	glScalef(object->scale.x, object->scale.y, object->scale.z);
-	glRotatef(object->rotation.x,1.0f,0.0f,0.0f);
-	glRotatef(object->rotation.y,0.0f,1.0f,0.0f);
-	glRotatef(object->rotation.z,0.0f,0.0f,1.0f);
+
+	switch(object->rotateFirst){
+		case 0:
+			glRotatef(object->rotation.x,1.0f,0.0f,0.0f);
+			break;
+		case 1:
+			glRotatef(object->rotation.y,0.0f,1.0f,0.0f);
+			break;
+		case 2:
+			glRotatef(object->rotation.z,0.0f,0.0f,1.0f);
+			break;
+	}
+
+	switch(object->rotateSecond){
+		case 0:
+			glRotatef(object->rotation.x,1.0f,0.0f,0.0f);
+			break;
+		case 1:
+			glRotatef(object->rotation.y,0.0f,1.0f,0.0f);
+			break;
+		case 2:
+			glRotatef(object->rotation.z,0.0f,0.0f,1.0f);
+			break;
+	}
+
+	switch(object->rotateThird){
+		case 0:
+			glRotatef(object->rotation.x,1.0f,0.0f,0.0f);
+			break;
+		case 1:
+			glRotatef(object->rotation.y,0.0f,1.0f,0.0f);
+			break;
+		case 2:
+			glRotatef(object->rotation.z,0.0f,0.0f,1.0f);
+			break;
+	}
+
 	glBindTexture(GL_TEXTURE_2D, textID);
 	glBegin(GL_TRIANGLES);
 
@@ -295,10 +353,10 @@ GLvoid DrawGLScene(){
 	if (InMainMenu) {
 
 		glViewport(0, 0, windowWidth, windowHeight);
-		glRotatef(rotX-15,1.0f,0.0f,0.0f);
+		glRotatef(rotX-10,1.0f,0.0f,0.0f);
 		glRotatef(rotY,0.0f,1.0f,0.0f);
 		glRotatef(rotZ,0.0f,0.0f,1.0f);
-		glTranslatef(tranX,-1.0f,tranZ);
+		glTranslatef(tranX,tranY,tranZ);
 
 		glPushMatrix();
 		draw(title, titleTextID);
@@ -319,10 +377,12 @@ GLvoid DrawGLScene(){
 	} else { // In Game
 
 		glViewport(0, 0, windowWidth, windowHeight);
+		glTranslatef(0, 0, -40);
 		glRotatef(rotX,1.0f,0.0f,0.0f);
 		glRotatef(rotY,0.0f,1.0f,0.0f);
 		glRotatef(rotZ,0.0f,0.0f,1.0f);
-		glTranslatef(tranX,-1.0f,tranZ);
+		glTranslatef(0, 0, 40);
+		glTranslatef(tranX,tranY,tranZ);
 
 		glPushMatrix();
 		draw(arena, arenaTextID);
@@ -342,6 +402,18 @@ GLvoid DrawGLScene(){
 
 		glPushMatrix();
 		draw(dolphin, dolphinTextID);
+		glPopMatrix();
+
+		glPushMatrix();
+			glDisable(GL_TEXTURE_2D);
+			//glColor3f(1, 0, 0);
+			glRasterPos2f(0,0);
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[0]);
+			if(timeLeft > 9)
+			{
+				glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[1]);
+			}
+			glEnable(GL_TEXTURE_2D);
 		glPopMatrix();
 	}
 
@@ -363,9 +435,9 @@ GLvoid ReSizeGLScene(int width, int height){
 	glLoadIdentity();
 
 	if(stereo)
-		gluPerspective(45.0f, (GLfloat)width/((GLfloat)height * 2.0f), 0.1f, 2000.0f);
+		gluPerspective(45.0f, (GLfloat)width/((GLfloat)height * 2.0f), 0.1f, 2200.0f);
 	else
-		gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2000.0f);
+		gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2200.0f);
 
 	windowWidth = width;
 	windowHeight = height;
@@ -382,8 +454,11 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 	if(key == KEYBOARD_ENTER && InMainMenu)
 	{
 		InMainMenu = false;
-		dolphin->translation = Vector3f(0, -13, -40);
+		dolphin->translation = Vector3f(0, -11, -40);
 		dolphin->rotation = Vector3f(0, 180, 0);
+		dolphin->rotateFirst = 1;
+		dolphin->rotateSecond = 0;
+		dolphin->rotateThird = 2;
 	}
 
 	if(key == KEYBOARD_F)
@@ -475,13 +550,36 @@ GLvoid SpecialKeysUp(int key, int x, int y){
 
 GLvoid HandleKeyboardInput(){
 	if(specialKeys[GLUT_KEY_LEFT]){
-		std::cout << "Key left pressed" << std::endl;
+		rotY += -3;
+		dolphin->rotation.y += 3;
+		dolphin->rotation.z = -5;
 	}
 	if(specialKeys[GLUT_KEY_RIGHT]){
-		std::cout << "Key right pressed" << std::endl;
+		rotY += 3;
+		dolphin->rotation.y += -3;
+		dolphin->rotation.z = 5;
 	}
 	if(specialKeys[GLUT_KEY_UP]){
-		std::cout << "Key Up pressed" << std::endl;
+		tranZ += 3 * cos(rotY * (M_PI / 180));
+		tranX -= 3 * sin(rotY * M_PI / 180);
+		dolphin->translation.z += 3 * cos(dolphin->rotation.y * (M_PI / 180));
+		dolphin->translation.x += 3 * sin(dolphin->rotation.y * M_PI / 180);
+		sky->translation.z += 3 * cos(dolphin->rotation.y * (M_PI / 180));
+		sky->translation.x += 3 * sin(dolphin->rotation.y * M_PI / 180);
+		sun->translation.z += 3 * cos(dolphin->rotation.y * (M_PI / 180));
+		sun->translation.x += 3 * sin(dolphin->rotation.y * M_PI / 180);
+		dolphin->rotation.x = -5;
+	}
+	if(specialKeys[GLUT_KEY_DOWN]){
+		tranZ -= 1 * cos(rotY * (M_PI / 180));
+		tranX -= 1 * sin(-rotY * M_PI / 180);
+		dolphin->translation.z -= 1 * cos(dolphin->rotation.y * (M_PI / 180));
+		dolphin->translation.x -= 1 * sin(dolphin->rotation.y * M_PI / 180);
+		sky->translation.z -= 1 * cos(dolphin->rotation.y * (M_PI / 180));
+		sky->translation.x -= 1 * sin(dolphin->rotation.y * M_PI / 180);
+		sun->translation.z -= 1 * cos(dolphin->rotation.y * (M_PI / 180));
+		sun->translation.x -= 1 * sin(dolphin->rotation.y * M_PI / 180);
+		dolphin->rotation.x = 1;
 	}
 }
 
