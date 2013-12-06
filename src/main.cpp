@@ -96,6 +96,7 @@ GLvoid GLKeyUp(unsigned char key, int x, int y);
 GLvoid SpecialKeys(int key, int x, int y);
 GLvoid SpecialKeysUp(int key, int x, int y);
 void CleanUp();
+void NewSwimmerPosition();
 bool IsCollision();
 
 #ifdef WIN32
@@ -194,7 +195,8 @@ GLvoid InitGL(){
 	sun->scale = Vector3f(100, 100, 100);
 
 	NeHeLoadBitmap(swimmerTexture,swimmerTextID);
-	swimmer->translation = Vector3f(0, -12, -200);
+	//swimmer->translation = Vector3f(0, -12, -200);
+	NewSwimmerPosition();
 	swimmer->scale = Vector3f(40, 40, 40);
 }
 
@@ -348,6 +350,7 @@ GLvoid DrawGLScene(){
 	if (IsCollision())
 	{
 		sunTextID = sunGaspTextID;
+		NewSwimmerPosition();
 	}
 	else
 	{
@@ -565,6 +568,14 @@ GLvoid HandleKeyboardInput(){
 bool IsCollision()
 {
 	return dolphin->CollidesWith(swimmer);
+}
+
+void NewSwimmerPosition()
+{
+	int maxDistance = 690;
+	int angle = (rand() % 360) * (M_PI / 180);
+	int distance = rand() % maxDistance;
+	swimmer->translation = Vector3f(distance * cos(angle), -12, distance * sin(angle));
 }
 
 #ifdef WIN32
