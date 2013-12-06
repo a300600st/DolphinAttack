@@ -6,12 +6,15 @@
 class CollisionObject : public DrawObject
 {
 private:
+	// These are DISTANCES from the object's center (aka positive values)
 	float rightBound;
+	float leftBound;
 	float frontBound;
+	float backBound;
 
 public:
-	CollisionObject(char*, float, float);
-	CollisionObject(char*, int*, float, float);
+	CollisionObject(char*, float);
+	CollisionObject(char*, int*, float);
 
 	bool CollidesWith(CollisionObject*);
 
