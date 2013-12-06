@@ -9,6 +9,7 @@
 #include <GL/GLU.h>
 #include <GL/glut.h>
 #include "DrawObject.h"
+#include "CollisionObject.h"
 #include <string>
 #include <cmath>
 #include <iostream>
@@ -35,7 +36,6 @@ int windowWidth = DEFAULT_WINDOW_WIDTH;
 int windowHeight = DEFAULT_WINDOW_HEIGHT;
 char* windowName = "My Glut Window";
 int fullscreen = 1;
-int stereo = 0;
 int texID = 0;
 
 // C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack
@@ -45,7 +45,7 @@ int texID = 0;
 DrawObject* title = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj");
 LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
 
-DrawObject* dolphin = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj");
+CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj", 10, 10);
 LPTSTR dolphinSkin = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\dolphinskin.bmp";
 
 DrawObject* arena = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Arena.obj");
@@ -58,7 +58,7 @@ DrawObject* sun = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\mod
 LPTSTR sunSmileTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sunsmile.bmp";
 LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sungasp.bmp";
 
-DrawObject* swimmer = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj");
+CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj", 10, 10);
 LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\swimmertexture.bmp";
 
 GLuint textures[7];
@@ -96,6 +96,7 @@ GLvoid GLKeyUp(unsigned char key, int x, int y);
 GLvoid SpecialKeys(int key, int x, int y);
 GLvoid SpecialKeysUp(int key, int x, int y);
 void CleanUp();
+bool IsCollision();
 
 #ifdef WIN32
 GLvoid PollJoyStick(GLvoid);
@@ -136,7 +137,7 @@ int main(int argc, char* argv[]){
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitWindowPosition(100, 50);
 	glutCreateWindow(windowName);
-	//glutFullScreen();
+	glutFullScreen();
 	startBackgroundMusic();
 
 	InitGL();
@@ -193,8 +194,8 @@ GLvoid InitGL(){
 	sun->scale = Vector3f(100, 100, 100);
 
 	NeHeLoadBitmap(swimmerTexture,swimmerTextID);
-	swimmer->translation = Vector3f(0, -188, -6.9);
-	swimmer->scale = Vector3f(100, 100, 100);
+	swimmer->translation = Vector3f(0, -12, -200);
+	swimmer->scale = Vector3f(40, 40, 40);
 }
 
 void updateValues()
@@ -267,12 +268,6 @@ void updateValues()
 			sun->translation.x -= 3 * sin(dolphin->rotation.y * M_PI / 180);
 		}*/
 
-		if(keyStates['g']){
-			sunTextID = sunGaspTextID;
-		}
-		else {
-			sunTextID = sunSmileTextID;
-		}
 		if(keyStates[KEYBOARD_SPACE]){
 			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
 			dolphinlaugh->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav";
@@ -349,6 +344,16 @@ GLvoid DrawGLScene(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	updateValues();
+
+	if (IsCollision())
+	{
+		sunTextID = sunGaspTextID;
+	}
+	else
+	{
+		sunTextID = sunSmileTextID;
+	}
+
 
 	if (InMainMenu) {
 
@@ -434,10 +439,7 @@ GLvoid ReSizeGLScene(int width, int height){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	if(stereo)
-		gluPerspective(45.0f, (GLfloat)width/((GLfloat)height * 2.0f), 0.1f, 2200.0f);
-	else
-		gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2200.0f);
+	gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2200.0f);
 
 	windowWidth = width;
 	windowHeight = height;
@@ -463,8 +465,6 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 
 	if(key == KEYBOARD_F)
 	{
-		if(stereo)
-			return;
 		if(fullscreen){
 			fullscreen = 0;
 			glutReshapeWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
@@ -480,27 +480,6 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 	{
 		keyStates[key] = true;
 	}
-
-#ifdef WIN32
-	if(key == KEYBOARD_N){ 
-		if(stereo){
-			if(!fullscreen){
-				glutReshapeWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-				glutPositionWindow(100,100);
-			}
-			else{
-				glutFullScreen();
-			}
-			stereo = 0;
-			DrawGLScene();
-		}
-		else{
-			glutFullScreen();
-			stereo = 1;
-			DrawGLScene();
-		}
-	}
-#endif 
 }
 
 GLvoid GLKeyUp(unsigned char key, int x, int y)
@@ -581,6 +560,11 @@ GLvoid HandleKeyboardInput(){
 		sun->translation.x -= 1 * sin(dolphin->rotation.y * M_PI / 180);
 		dolphin->rotation.x = 1;
 	}
+}
+
+bool IsCollision()
+{
+	return dolphin->CollidesWith(swimmer);
 }
 
 #ifdef WIN32
