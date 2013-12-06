@@ -113,7 +113,7 @@ int main(int argc, char* argv[]){
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitWindowPosition(100, 50);
 	glutCreateWindow(windowName);
-	glutFullScreen();
+	//glutFullScreen();
 	startBackgroundMusic();
 
 	InitGL();
