@@ -36,6 +36,9 @@ public:
 	Vector3f scale;
 	Vector3f translation;
 
+	float velocity;
+	float bobbingVelocity;
+
 	int rotateFirst;
 	int rotateSecond;
 	int rotateThird;

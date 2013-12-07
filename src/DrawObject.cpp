@@ -16,6 +16,8 @@ void DrawObject::Init(char* fileName, int rotateFirst, int rotateSecond, int rot
 	this->translation = Vector3f(0, 0, 0);
 	this->scale = Vector3f(1, 1, 1);
 	this->rotation = Vector3f(0, 0, 0);
+	this->velocity = 0;
+	this->bobbingVelocity = -1;
 
 	std::ifstream file(fileName);
 	if(!file.good()){
