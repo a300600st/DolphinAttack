@@ -43,24 +43,24 @@ int texID = 0;
 // C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
 // C:\\Users\\Ryan\\Documents\\DolphinAttack
 
-DrawObject* title = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj");
-LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
+DrawObject* title = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj");
+LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
 
-CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj", 6);
-LPTSTR dolphinSkin = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\dolphinskin.bmp";
+CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj", 6);
+LPTSTR dolphinSkin = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\dolphinskin.bmp";
 
-DrawObject* arena = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Arena.obj");
-LPTSTR arenaTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\arenatexture.bmp";
+DrawObject* arena = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Arena.obj");
+LPTSTR arenaTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\arenatexture.bmp";
 
-DrawObject* sky = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sky.obj");
-LPTSTR skyTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\skytexture.bmp";
+DrawObject* sky = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sky.obj");
+LPTSTR skyTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\skytexture.bmp";
 
-DrawObject* sun = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sun.obj");
-LPTSTR sunSmileTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sunsmile.bmp";
-LPTSTR sunGaspTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sungasp.bmp";
+DrawObject* sun = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sun.obj");
+LPTSTR sunSmileTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sunsmile.bmp";
+LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sungasp.bmp";
 
-CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Swimmer.obj", 2);
-LPTSTR swimmerTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\swimmertexture.bmp";
+CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj", 2);
+LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\swimmertexture.bmp";
 
 GLuint textures[7];
 
@@ -85,7 +85,6 @@ float rotZ = 0.0;
 
 bool InMainMenu = true;
 int timeLeft = 99;  //TIMER FOR HOW LONG THE GAME LASTs
-int hitTimeLeft = 0;
 char time[2];
 
 GLvoid HandleKeyboardInput();
@@ -116,31 +115,26 @@ void startBackgroundMusic(){
 
 static void timer(int value)
 {
-	if(timeLeft > 0)
+	switch (value)
 	{
-		timeLeft--;
-		itoa(timeLeft,time,10);
-		glutPostRedisplay();
-		glutTimerFunc(1000, timer, 0);
-	}
-	else
-	{
-		std::cout<<"Game Over"<<endl;
-		//system("pause");
-	}
-}
-
-static void hitTimer(int value)
-{
-	if(hitTimeLeft > 0)
-	{
-		hitTimeLeft--;
-		sunTextID = sunGaspTextID;
-		glutTimerFunc(1000, hitTimer, 0);
-	}
-	else
-	{
+	//Game Timer
+	case 0:
+		if(timeLeft > 0)
+		{
+			timeLeft--;
+			itoa(timeLeft,time,10);
+			glutPostRedisplay();
+			glutTimerFunc(1000, timer, 0);
+		}
+		else
+		{
+			std::cout<<"Game Over"<<endl;
+			//system("pause");
+		}
+		break;
+	case 1:
 		sunTextID = sunSmileTextID;
+		break;
 	}
 }
 
@@ -154,7 +148,7 @@ int main(int argc, char* argv[]){
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitWindowPosition(100, 50);
 	glutCreateWindow(windowName);
-	//glutFullScreen();
+	glutFullScreen();
 	startBackgroundMusic();
 
 	InitGL();
@@ -251,15 +245,9 @@ void updateValues()
 {
 	if (!InMainMenu) {
 		moveDolphin();
-		if(keyStates['g']){
-			sunTextID = sunGaspTextID;
-		}
-		else {
-			sunTextID = sunSmileTextID;
-		}
 		if(keyStates[KEYBOARD_SPACE]){
 			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-			dolphinlaugh->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav";
+			dolphinlaugh->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav";
 			dolphinlaugh->Load();
 			dolphinlaugh->Play();
 		}
@@ -337,8 +325,8 @@ GLvoid DrawGLScene(){
 	if (IsCollision())
 	{
 		NewSwimmerPosition();
-		hitTimeLeft = 1;
-		hitTimer(0);
+		sunTextID = sunGaspTextID;
+		glutTimerFunc(1000, timer, 1);
 	}
 
 	if (InMainMenu) {
@@ -354,8 +342,21 @@ GLvoid DrawGLScene(){
 		glPopMatrix();
 
 	} else { // In Game
-
 		glViewport(0, 0, windowWidth, windowHeight);
+
+		glPushMatrix();
+			glDisable(GL_TEXTURE_2D);
+			//glColor3f(1, 0, 0);
+			glTranslatef(26, 14, -40);
+			glRasterPos2f(0,0);
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[0]);
+			if(timeLeft > 9)
+			{
+				glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[1]);
+			}
+			glEnable(GL_TEXTURE_2D);
+		glPopMatrix();
+
 		glTranslatef(0, 0, -40);
 		glRotatef(rotX,1.0f,0.0f,0.0f);
 		glRotatef(rotY,0.0f,1.0f,0.0f);
@@ -383,17 +384,6 @@ GLvoid DrawGLScene(){
 		draw(dolphin, dolphinTextID);
 		glPopMatrix();
 
-		glPushMatrix();
-			glDisable(GL_TEXTURE_2D);
-			//glColor3f(1, 0, 0);
-			glRasterPos2f(0,0);
-			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[0]);
-			if(timeLeft > 9)
-			{
-				glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[1]);
-			}
-			glEnable(GL_TEXTURE_2D);
-		glPopMatrix();
 	}
 
 	glFlush();
