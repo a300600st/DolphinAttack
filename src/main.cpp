@@ -214,6 +214,7 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(swimmerTexture, swimmerTextID, false);
 	NewSwimmerPosition();
 	swimmer->scale = Vector3f(40, 40, 40);
+	swimmer->bobbingVelocity = 0;
 
 	NeHeLoadBitmap(treesTexture, treesTextID, true);
 	trees->translation = Vector3f(0, -220 , -6.9);
@@ -251,10 +252,27 @@ void moveDolphin(){
 	}
 }
 
+void bobSwimmer()
+{
+	if (swimmer->translation.y > -12.75)
+	{
+		swimmer->bobbingVelocity -= .0007;
+		swimmer->rotation.x += .05;
+	}
+	else
+	{
+		swimmer->bobbingVelocity += .0007;
+		swimmer->rotation.x -= .05;
+	}
+
+	swimmer->translation.y += swimmer->bobbingVelocity;
+}
+
 void updateValues()
 {
 	if (!InMainMenu) {
 		moveDolphin();
+		bobSwimmer();
 		if(keyStates[KEYBOARD_SPACE]){
 			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
 			dolphinlaugh->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav";
@@ -531,8 +549,11 @@ void NewSwimmerPosition()
 {
 	int maxDistance = 690;
 	int angle = (rand() % 360) * (M_PI / 180);
+	int faceAngle = (rand() % 360) * (M_PI / 180);
 	int distance = rand() % maxDistance;
-	swimmer->translation = Vector3f(distance * cos(angle), -12, distance * sin(angle));
+	swimmer->translation = Vector3f(distance * cos(angle), -12.35, distance * sin(angle));
+	swimmer->rotation.y = faceAngle;
+	swimmer->bobbingVelocity = 0;
 }
 
 #ifdef WIN32
