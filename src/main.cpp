@@ -35,7 +35,6 @@ using namespace System::Media;
 int windowWidth = DEFAULT_WINDOW_WIDTH;
 int windowHeight = DEFAULT_WINDOW_HEIGHT;
 char* windowName = "My Glut Window";
-int fullscreen = 1;
 int stereo = 0;
 int texID = 0;
 
@@ -62,7 +61,10 @@ LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\s
 CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj", 2);
 LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\swimmertexture.bmp";
 
-GLuint textures[7];
+DrawObject* trees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Trees.obj");
+LPTSTR treesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\treestexture.bmp";
+
+GLuint textures[8];
 
 GLuint titleTextID;
 GLuint dolphinTextID;
@@ -72,6 +74,7 @@ GLuint sunSmileTextID;
 GLuint sunGaspTextID;
 GLuint sunTextID;
 GLuint swimmerTextID;
+GLuint treesTextID;
 
 bool specialKeys[1000] = {0};
 bool* keyStates = new bool[256];
@@ -102,7 +105,7 @@ bool IsCollision();
 
 #ifdef WIN32
 GLvoid PollJoyStick(GLvoid);
-bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid);
+bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
 #endif 
 
 void startBackgroundMusic(){
@@ -182,32 +185,39 @@ GLvoid InitGL(){
 	glEnable(GL_COLOR_MATERIAL);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-	NeHeLoadBitmap(titleTexture,titleTextID);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable( GL_BLEND );
+
+	NeHeLoadBitmap(titleTexture, titleTextID, false);
 	title->translation = Vector3f(-.05, 3.89, -16.9);
 	title->scale = Vector3f(1.6, 1.55, 1.5);
 	title->rotation = Vector3f(103.5, 180, 0);
 
-	NeHeLoadBitmap(dolphinSkin,dolphinTextID);
+	NeHeLoadBitmap(dolphinSkin, dolphinTextID, false);
 	dolphin->translation = Vector3f(1.2, -5.4, -20);
 	dolphin->rotation = Vector3f(-30, -40, -20);
 
-	NeHeLoadBitmap(arenaTexture,arenaTextID);
+	NeHeLoadBitmap(arenaTexture, arenaTextID, false);
 	arena->translation = Vector3f(0, -188, -6.9);
 	arena->scale = Vector3f(100, 100, 100);
 
-	NeHeLoadBitmap(skyTexture,skyTextID);
+	NeHeLoadBitmap(skyTexture, skyTextID, false);
 	sky->translation = Vector3f(0, -188 , -6.9);
 	sky->scale = Vector3f(120, 120, 120);
 
-	NeHeLoadBitmap(sunSmileTexture,sunSmileTextID);
-	NeHeLoadBitmap(sunGaspTexture,sunGaspTextID);
+	NeHeLoadBitmap(sunGaspTexture, sunGaspTextID, true);
+	NeHeLoadBitmap(sunSmileTexture, sunSmileTextID, true);
 	sun->translation = Vector3f(0, -188, -6.9);
 	sun->scale = Vector3f(120, 120, 120);
 	sunTextID = sunSmileTextID;
 
-	NeHeLoadBitmap(swimmerTexture,swimmerTextID);
+	NeHeLoadBitmap(swimmerTexture, swimmerTextID, false);
 	NewSwimmerPosition();
 	swimmer->scale = Vector3f(40, 40, 40);
+
+	NeHeLoadBitmap(treesTexture, treesTextID, true);
+	trees->translation = Vector3f(0, -220 , -6.9);
+	trees->scale = Vector3f(120, 120, 120);
 }
 
 void moveDolphin(){
@@ -377,13 +387,16 @@ GLvoid DrawGLScene(){
 		glPopMatrix();
 
 		glPushMatrix();
+		draw(trees, treesTextID);
+		glPopMatrix();
+
+		glPushMatrix();
 		draw(swimmer, swimmerTextID);
 		glPopMatrix();
 
 		glPushMatrix();
 		draw(dolphin, dolphinTextID);
 		glPopMatrix();
-
 	}
 
 	glFlush();
@@ -423,19 +436,6 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 		dolphin->rotateFirst = 1;
 		dolphin->rotateSecond = 0;
 		dolphin->rotateThird = 2;
-	}
-
-	if(key == KEYBOARD_F)
-	{
-		if(fullscreen){
-			fullscreen = 0;
-			glutReshapeWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-			glutPositionWindow(100,100);
-		}
-		else{
-			glutFullScreen();
-			fullscreen = 1;
-		}
 	}
 
 	if (!InMainMenu)
@@ -536,7 +536,7 @@ void NewSwimmerPosition()
 }
 
 #ifdef WIN32
-bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid)					
+bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha)
 {
 	HBITMAP hBMP;														
 	BITMAP	BMP;														
@@ -545,11 +545,21 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid)
 	if (!hBMP)															
 		return FALSE;													
 	GetObject(hBMP, sizeof(BMP), &BMP);									
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);								
 	glBindTexture(GL_TEXTURE_2D, texid);								
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, BMP.bmWidth, BMP.bmHeight, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, BMP.bmBits);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	if (alpha)
+	{
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexImage2D(GL_TEXTURE_2D, 0, 4, BMP.bmWidth, BMP.bmHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, BMP.bmBits);
+	}
+	else
+	{
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, BMP.bmWidth, BMP.bmHeight, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, BMP.bmBits);
+	}
+
 	DeleteObject(hBMP);													
 	return TRUE;														
 }
