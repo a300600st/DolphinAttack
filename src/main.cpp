@@ -85,6 +85,7 @@ float rotZ = 0.0;
 
 bool InMainMenu = true;
 int timeLeft = 99;  //TIMER FOR HOW LONG THE GAME LASTs
+int hitTimeLeft = 0;
 char time[2];
 
 GLvoid HandleKeyboardInput();
@@ -107,7 +108,7 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid);
 
 void startBackgroundMusic(){
 	System::Media::SoundPlayer^ backgroundmusic = gcnew System::Media::SoundPlayer();
-	backgroundmusic->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\backgroundmusic.wav";
+	backgroundmusic->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\musicLoop.wav";
 	backgroundmusic->Load();
 	backgroundmusic->PlayLooping();
 }
@@ -129,6 +130,20 @@ static void timer(int value)
 	}
 }
 
+static void hitTimer(int value)
+{
+	if(hitTimeLeft > 0)
+	{
+		hitTimeLeft--;
+		sunTextID = sunGaspTextID;
+		glutTimerFunc(1000, hitTimer, 0);
+	}
+	else
+	{
+		sunTextID = sunSmileTextID;
+	}
+}
+
 int main(int argc, char* argv[]){
 	for(int i = 0; i < 256; i++)
 	{
@@ -139,7 +154,7 @@ int main(int argc, char* argv[]){
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitWindowPosition(100, 50);
 	glutCreateWindow(windowName);
-	glutFullScreen();
+	//glutFullScreen();
 	startBackgroundMusic();
 
 	InitGL();
@@ -194,9 +209,9 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(sunGaspTexture,sunGaspTextID);
 	sun->translation = Vector3f(0, -188, -6.9);
 	sun->scale = Vector3f(120, 120, 120);
+	sunTextID = sunSmileTextID;
 
 	NeHeLoadBitmap(swimmerTexture,swimmerTextID);
-	//swimmer->translation = Vector3f(0, -12, -200);
 	NewSwimmerPosition();
 	swimmer->scale = Vector3f(40, 40, 40);
 }
@@ -321,14 +336,10 @@ GLvoid DrawGLScene(){
 
 	if (IsCollision())
 	{
-		sunTextID = sunGaspTextID;
 		NewSwimmerPosition();
+		hitTimeLeft = 1;
+		hitTimer(0);
 	}
-	else
-	{
-		sunTextID = sunSmileTextID;
-	}
-
 
 	if (InMainMenu) {
 
