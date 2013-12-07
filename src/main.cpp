@@ -9,6 +9,7 @@
 #include <GL/GLU.h>
 #include <GL/glut.h>
 #include "DrawObject.h"
+#include "CollisionObject.h"
 #include <string>
 #include <cmath>
 #include <iostream>
@@ -34,7 +35,7 @@ using namespace System::Media;
 int windowWidth = DEFAULT_WINDOW_WIDTH;
 int windowHeight = DEFAULT_WINDOW_HEIGHT;
 char* windowName = "My Glut Window";
-int fullscreen = 0;
+int fullscreen = 1;
 int stereo = 0;
 int texID = 0;
 
@@ -45,7 +46,7 @@ int texID = 0;
 DrawObject* title = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj");
 LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
 
-DrawObject* dolphin = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj");
+CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj", 6);
 LPTSTR dolphinSkin = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\dolphinskin.bmp";
 
 DrawObject* arena = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Arena.obj");
@@ -58,7 +59,7 @@ DrawObject* sun = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\Dolp
 LPTSTR sunSmileTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sunsmile.bmp";
 LPTSTR sunGaspTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sungasp.bmp";
 
-DrawObject* swimmer = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Swimmer.obj");
+CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Swimmer.obj", 2);
 LPTSTR swimmerTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\swimmertexture.bmp";
 
 GLuint textures[7];
@@ -96,6 +97,8 @@ GLvoid GLKeyUp(unsigned char key, int x, int y);
 GLvoid SpecialKeys(int key, int x, int y);
 GLvoid SpecialKeysUp(int key, int x, int y);
 void CleanUp();
+void NewSwimmerPosition();
+bool IsCollision();
 
 #ifdef WIN32
 GLvoid PollJoyStick(GLvoid);
@@ -193,8 +196,9 @@ GLvoid InitGL(){
 	sun->scale = Vector3f(120, 120, 120);
 
 	NeHeLoadBitmap(swimmerTexture,swimmerTextID);
-	swimmer->translation = Vector3f(0, -188, -6.9);
-	swimmer->scale = Vector3f(100, 100, 100);
+	//swimmer->translation = Vector3f(0, -12, -200);
+	NewSwimmerPosition();
+	swimmer->scale = Vector3f(40, 40, 40);
 }
 
 void moveDolphin(){
@@ -315,6 +319,17 @@ GLvoid DrawGLScene(){
 	glLoadIdentity();
 	updateValues();
 
+	if (IsCollision())
+	{
+		sunTextID = sunGaspTextID;
+		NewSwimmerPosition();
+	}
+	else
+	{
+		sunTextID = sunSmileTextID;
+	}
+
+
 	if (InMainMenu) {
 
 		glViewport(0, 0, windowWidth, windowHeight);
@@ -386,12 +401,7 @@ GLvoid ReSizeGLScene(int width, int height){
 	glViewport(0,0,width,height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	if(stereo)
-		gluPerspective(45.0f, (GLfloat)width/((GLfloat)height * 2.0f), 0.1f, 2500.0f);
-	else
-		gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2500.0f);
-
+	gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2500.0f);
 	windowWidth = width;
 	windowHeight = height;
 	glMatrixMode(GL_MODELVIEW);
@@ -416,8 +426,6 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 
 	if(key == KEYBOARD_F)
 	{
-		if(stereo)
-			return;
 		if(fullscreen){
 			fullscreen = 0;
 			glutReshapeWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
@@ -433,27 +441,6 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 	{
 		keyStates[key] = true;
 	}
-
-#ifdef WIN32
-	if(key == KEYBOARD_N){ 
-		if(stereo){
-			if(!fullscreen){
-				glutReshapeWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-				glutPositionWindow(100,100);
-			}
-			else{
-				glutFullScreen();
-			}
-			stereo = 0;
-			DrawGLScene();
-		}
-		else{
-			glutFullScreen();
-			stereo = 1;
-			DrawGLScene();
-		}
-	}
-#endif 
 }
 
 GLvoid GLKeyUp(unsigned char key, int x, int y)
@@ -532,6 +519,19 @@ GLvoid HandleKeyboardInput(){
 				dolphin->velocity -= .2;
 		}
 	}
+}
+
+bool IsCollision()
+{
+	return dolphin->CollidesWith(swimmer);
+}
+
+void NewSwimmerPosition()
+{
+	int maxDistance = 690;
+	int angle = (rand() % 360) * (M_PI / 180);
+	int distance = rand() % maxDistance;
+	swimmer->translation = Vector3f(distance * cos(angle), -12, distance * sin(angle));
 }
 
 #ifdef WIN32

@@ -44,10 +44,10 @@ public:
 	int rotateThird;
 
 	DrawObject(char*);
-	DrawObject(char*, int, int, int);
+	DrawObject(char*, int*);
 
 private:
-	void Init(char*, int, int, int);
+	void Init(char*, int*);
 };
 
 #endif
