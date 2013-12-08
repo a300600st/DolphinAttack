@@ -124,7 +124,7 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
 
 void startBackgroundMusic(){
 	// play some sound stream, looped
-	engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\musicLoop.wav", true);
+	engine->play2D("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\musicLoop.wav", true);
 }
 
 
@@ -227,6 +227,7 @@ void PlayGame(){
 	sunTextID = sunSmileTextID;
 	NewSwimmerPosition();
 	swimmer->scale = Vector3f(40, 40, 40);
+	swimmer->rotation.x = 0;
 	swimmer->bobbingVelocity = 0;
 	trees->translation = Vector3f(0, -220 , -6.9);
 	trees->scale = Vector3f(120, 120, 120);
@@ -393,7 +394,7 @@ GLvoid DrawGLScene(){
 
 	if (IsCollision())
 	{
-		engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav");
+		engine->play2D("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav");
 		IncrementScore();
 		NewSwimmerPosition();
 		sunTextID = sunGaspTextID;
@@ -503,7 +504,10 @@ GLvoid ReSizeGLScene(int width, int height){
 GLvoid GLKeyDown(unsigned char key, int x, int y){
 	if(key == KEYBOARD_ESC)
 	{
-		exit(0);
+		if (InMainMenu)
+			exit(0);
+		else
+			LaunchMenu();
 	}
 
 	if(key == KEYBOARD_ENTER && InMainMenu)
