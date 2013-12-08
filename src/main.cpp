@@ -1,4 +1,3 @@
-
 #ifdef WIN32
 #include <Windows.h>
 #include <MMSystem.h>
@@ -28,11 +27,9 @@ using namespace irrklang;
 
 #define DEFAULT_WINDOW_WIDTH 1366
 #define DEFAULT_WINDOW_HEIGHT 768
-#define KEYBOARD_S 115
 #define KEYBOARD_ESC 27
 #define KEYBOARD_ENTER 13
 #define KEYBOARD_SPACE 32
-#define KEYBOARD_N 110
 
 int windowWidth = DEFAULT_WINDOW_WIDTH;
 int windowHeight = DEFAULT_WINDOW_HEIGHT;
@@ -156,9 +153,7 @@ bool InMainMenu;
 bool victory;
 bool gameover;
 int score;
-char scoreChar[2];
 int timeLeft;
-char time[2];
 
 ISoundEngine* engine;
 
@@ -695,11 +690,9 @@ GLvoid SpecialKeys(int key, int x, int y){
 			break;
 		case GLUT_KEY_UP:
 			specialKeys[GLUT_KEY_UP] = 1;
-			//rotX += .5f;
 			break;
 		case GLUT_KEY_DOWN:
 			specialKeys[GLUT_KEY_DOWN] = 1;
-			//rotX += -.5f;
 			break;
 		default:
 			break;
@@ -819,7 +812,6 @@ void updateSwimmerHeads(){
 		headsBoxTextID = heads1TextID;
 	else
 		headsBoxTextID = heads0TextID;
-
 }
 
 void IncrementScore()
