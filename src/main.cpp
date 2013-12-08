@@ -43,34 +43,65 @@ int texID = 0;
 // C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
 // C:\\Users\\Ryan\\Documents\\DolphinAttack
 
-DrawObject* title = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj");
-LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
+DrawObject* title = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj");
+LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
 
-CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj", 6);
-LPTSTR dolphinSkin = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\dolphinskin.bmp";
+DrawObject* numBox1 = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
+DrawObject* colonBox = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
+DrawObject* numBox2 = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
+DrawObject* numBox3 = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
+LPTSTR number0 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number0.bmp";
+LPTSTR number1 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number1.bmp";
+LPTSTR number2 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number2.bmp";
+LPTSTR number3 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number3.bmp";
+LPTSTR number4 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number4.bmp";
+LPTSTR number5 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number5.bmp";
+LPTSTR number6 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number6.bmp";
+LPTSTR number7 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number7.bmp";
+LPTSTR number8 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number8.bmp";
+LPTSTR number9 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number9.bmp";
+LPTSTR colon = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\colon.bmp";
 
-DrawObject* arena = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Arena.obj");
-LPTSTR arenaTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\arenatexture.bmp";
+CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj", 6);
+LPTSTR dolphinSkin = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\dolphinskin.bmp";
 
-DrawObject* water = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Water.obj");
-LPTSTR waterTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\watertexture.bmp";
+DrawObject* arena = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Arena.obj");
+LPTSTR arenaTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\arenatexture.bmp";
 
-DrawObject* sky = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sky.obj");
-LPTSTR skyTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\skytexture.bmp";
+DrawObject* water = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Water.obj");
+LPTSTR waterTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\watertexture.bmp";
 
-DrawObject* sun = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sun.obj");
-LPTSTR sunSmileTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sunsmile.bmp";
-LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sungasp.bmp";
+DrawObject* sky = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sky.obj");
+LPTSTR skyTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\skytexture.bmp";
 
-CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj", 2);
-LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\swimmertexture.bmp";
+DrawObject* sun = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sun.obj");
+LPTSTR sunSmileTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sunsmile.bmp";
+LPTSTR sunGaspTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sungasp.bmp";
 
-DrawObject* trees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Trees.obj");
-LPTSTR treesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\treestexture.bmp";
+CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Swimmer.obj", 2);
+LPTSTR swimmerTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\swimmertexture.bmp";
+
+DrawObject* trees = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Trees.obj");
+LPTSTR treesTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\treestexture.bmp";
 
 GLuint textures[8];
 
+
 GLuint titleTextID;
+GLuint numBox1TextID;
+GLuint colonTextID;
+GLuint numBox2TextID;
+GLuint numBox3TextID;
+GLuint number0TextID;
+GLuint number1TextID;
+GLuint number2TextID;
+GLuint number3TextID;
+GLuint number4TextID;
+GLuint number5TextID;
+GLuint number6TextID;
+GLuint number7TextID;
+GLuint number8TextID;
+GLuint number9TextID;
 GLuint dolphinTextID;
 GLuint arenaTextID;
 GLuint waterTextID;
@@ -127,6 +158,54 @@ void startBackgroundMusic(){
 	engine->play2D("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\musicLoop.wav", true);
 }
 
+void updateTimeTextures(){
+	if (timeLeft >= 120)
+		numBox1TextID = number2TextID;
+	else if (timeLeft < 120 && timeLeft >= 60)
+		numBox1TextID = number1TextID;
+	else
+		numBox1TextID = number0TextID;
+	
+	if ((timeLeft >= 110 && timeLeft < 120) ||
+			(timeLeft >= 50 && timeLeft < 60))
+		numBox2TextID = number5TextID;
+	else if ((timeLeft >= 100 && timeLeft < 110) ||
+			(timeLeft >= 40 && timeLeft < 50))
+		numBox2TextID = number4TextID;
+	else if ((timeLeft >= 90 && timeLeft < 100) ||
+			(timeLeft >= 30 && timeLeft < 40))
+		numBox2TextID = number3TextID;
+	else if ((timeLeft >= 80 && timeLeft < 90) ||
+			(timeLeft >= 20 && timeLeft < 30))
+		numBox2TextID = number2TextID;
+	else if ((timeLeft >= 70 && timeLeft < 80) ||
+			(timeLeft >= 10 && timeLeft < 20))
+		numBox2TextID = number1TextID;
+	else
+		numBox2TextID = number0TextID;
+
+	if (timeLeft % 10 == 9)
+		numBox3TextID = number9TextID;
+	else if (timeLeft % 10 == 8)
+		numBox3TextID = number8TextID;
+	else if (timeLeft % 10 == 7)
+		numBox3TextID = number7TextID;
+	else if (timeLeft % 10 == 6)
+		numBox3TextID = number6TextID;
+	else if (timeLeft % 10 == 5)
+		numBox3TextID = number5TextID;
+	else if (timeLeft % 10 == 4)
+		numBox3TextID = number4TextID;
+	else if (timeLeft % 10 == 3)
+		numBox3TextID = number3TextID;
+	else if (timeLeft % 10 == 2)
+		numBox3TextID = number2TextID;
+	else if (timeLeft % 10 == 1)
+		numBox3TextID = number1TextID;
+	else
+		numBox3TextID = number0TextID;
+}
+
 
 static void timer(int value)
 {
@@ -137,7 +216,7 @@ static void timer(int value)
 		if(timeLeft > 0)
 		{
 			timeLeft--;
-			itoa(timeLeft,time,10);
+			updateTimeTextures();
 			glutPostRedisplay();
 			glutTimerFunc(1000, timer, 0);
 		}
@@ -236,7 +315,10 @@ void PlayGame(){
 	InMainMenu = false;
 	score = 0;
 	itoa(score,scoreChar,10);
-	timeLeft = 99;
+	numBox1TextID = number2TextID;
+	numBox2TextID = number0TextID;
+	numBox3TextID = number0TextID;
+	timeLeft = 120;
 	timer(0);
 }
 
@@ -260,10 +342,34 @@ GLvoid InitGL(){
 	title->scale = Vector3f(1.6, 1.55, 1.5);
 	title->rotation = Vector3f(103.5, 180, 0);
 
+	NeHeLoadBitmap(number0, number0TextID, true);
+	NeHeLoadBitmap(number1, number1TextID, true);
+	NeHeLoadBitmap(number2, number2TextID, true);
+	NeHeLoadBitmap(number3, number3TextID, true);
+	NeHeLoadBitmap(number4, number4TextID, true);
+	NeHeLoadBitmap(number5, number5TextID, true);
+	NeHeLoadBitmap(number6, number6TextID, true);
+	NeHeLoadBitmap(number7, number7TextID, true);
+	NeHeLoadBitmap(number8, number8TextID, true);
+	NeHeLoadBitmap(number9, number9TextID, true);
+	numBox1->translation = Vector3f(5, 3.3, -10);
+	numBox1->scale = Vector3f(0.12, 0.12, 0.12);
+	numBox1->rotation = Vector3f(90, 0, 0);
+	colonBox->translation = Vector3f(5.5, 3.3, -10);
+	colonBox->scale = Vector3f(0.12, 0.12, 0.12);
+	colonBox->rotation = Vector3f(90, 0, 0);
+	numBox2->translation = Vector3f(6, 3.3, -10);
+	numBox2->scale = Vector3f(0.12, 0.12, 0.12);
+	numBox2->rotation = Vector3f(90, 0, 0);
+	numBox3->translation = Vector3f(6.6, 3.3, -10);
+	numBox3->scale = Vector3f(0.12, 0.12, 0.12);
+	numBox3->rotation = Vector3f(90, 0, 0);
+
 	//avoid swimmer being created on dolphin
 	swimmer->translation.x = -1000;
 
 	NeHeLoadBitmap(dolphinSkin, dolphinTextID, false);
+	NeHeLoadBitmap(colon, colonTextID, true);
 	NeHeLoadBitmap(arenaTexture, arenaTextID, false);
 	NeHeLoadBitmap(waterTexture, waterTextID, true);
 	NeHeLoadBitmap(skyTexture, skyTextID, false);
@@ -423,62 +529,58 @@ GLvoid DrawGLScene(){
 		glViewport(0, 0, windowWidth, windowHeight);
 
 		glPushMatrix();
-			glDisable(GL_TEXTURE_2D);
-			glTranslatef(0, 14, -40);
-			glRasterPos2f(0,0);
-			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,scoreChar[0]);
-			if(score > 9)
-			{
-				glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,scoreChar[1]);
-			}
-			glEnable(GL_TEXTURE_2D);
+
+			glTranslatef(0, 0, -40);
+			glRotatef(rotX,1.0f,0.0f,0.0f);
+			glRotatef(rotY,0.0f,1.0f,0.0f);
+			glRotatef(rotZ,0.0f,0.0f,1.0f);
+			glTranslatef(0, 0, 40);
+			glTranslatef(tranX,tranY,tranZ);
+
+			glPushMatrix();
+			draw(sky, skyTextID);
+			glPopMatrix();
+
+			glPushMatrix();
+			draw(sun, sunTextID);
+			glPopMatrix();
+
+			glPushMatrix();
+			draw(trees, treesTextID);
+			glPopMatrix();
+
+			glPushMatrix();
+			draw(swimmer, swimmerTextID);
+			glPopMatrix();
+
+			glPushMatrix();
+			draw(dolphin, dolphinTextID);
+			glPopMatrix();
+
+			glPushMatrix();
+			draw(arena, arenaTextID);
+			glPopMatrix();
+
+			glPushMatrix();
+			draw(water, waterTextID);
+			glPopMatrix();
+
 		glPopMatrix();
 
 		glPushMatrix();
-			glDisable(GL_TEXTURE_2D);
-			glTranslatef(26, 14, -40);
-			glRasterPos2f(0,0);
-			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[0]);
-			if(timeLeft > 9)
-			{
-				glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[1]);
-			}
-			glEnable(GL_TEXTURE_2D);
-		glPopMatrix();
-
-		glTranslatef(0, 0, -40);
-		glRotatef(rotX,1.0f,0.0f,0.0f);
-		glRotatef(rotY,0.0f,1.0f,0.0f);
-		glRotatef(rotZ,0.0f,0.0f,1.0f);
-		glTranslatef(0, 0, 40);
-		glTranslatef(tranX,tranY,tranZ);
-
-		glPushMatrix();
-		draw(sky, skyTextID);
+		draw(numBox1, numBox1TextID);
 		glPopMatrix();
 
 		glPushMatrix();
-		draw(sun, sunTextID);
+		draw(colonBox, colonTextID);
 		glPopMatrix();
 
 		glPushMatrix();
-		draw(trees, treesTextID);
+		draw(numBox2, numBox2TextID);
 		glPopMatrix();
 
 		glPushMatrix();
-		draw(swimmer, swimmerTextID);
-		glPopMatrix();
-
-		glPushMatrix();
-		draw(dolphin, dolphinTextID);
-		glPopMatrix();
-
-		glPushMatrix();
-		draw(arena, arenaTextID);
-		glPopMatrix();
-
-		glPushMatrix();
-		draw(water, waterTextID);
+		draw(numBox3, numBox3TextID);
 		glPopMatrix();
 	}
 
@@ -623,7 +725,7 @@ void Victory()
 {
 	victory = true;
 	System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-	dolphinlaugh->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav";
+	dolphinlaugh->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav";
 	dolphinlaugh->Load();
 	dolphinlaugh->Play();
 	glutTimerFunc(3000, timer, 2);
