@@ -29,46 +29,48 @@ using namespace System::Media;
 #define KEYBOARD_ESC 27
 #define KEYBOARD_ENTER 13
 #define KEYBOARD_SPACE 32
-#define KEYBOARD_F 102
 #define KEYBOARD_N 110
 
 int windowWidth = DEFAULT_WINDOW_WIDTH;
 int windowHeight = DEFAULT_WINDOW_HEIGHT;
 char* windowName = "My Glut Window";
-int stereo = 0;
 int texID = 0;
 
 // C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack
 // C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
 // C:\\Users\\Ryan\\Documents\\DolphinAttack
 
-DrawObject* title = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj");
-LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
+DrawObject* title = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj");
+LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
 
-CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj", 6);
-LPTSTR dolphinSkin = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\dolphinskin.bmp";
+CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj", 6);
+LPTSTR dolphinSkin = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\dolphinskin.bmp";
 
-DrawObject* arena = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Arena.obj");
-LPTSTR arenaTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\arenatexture.bmp";
+DrawObject* arena = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Arena.obj");
+LPTSTR arenaTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\arenatexture.bmp";
 
-DrawObject* sky = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sky.obj");
-LPTSTR skyTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\skytexture.bmp";
+DrawObject* water = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Water.obj");
+LPTSTR waterTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\watertexture.bmp";
 
-DrawObject* sun = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sun.obj");
-LPTSTR sunSmileTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sunsmile.bmp";
-LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sungasp.bmp";
+DrawObject* sky = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sky.obj");
+LPTSTR skyTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\skytexture.bmp";
 
-CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj", 2);
-LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\swimmertexture.bmp";
+DrawObject* sun = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sun.obj");
+LPTSTR sunSmileTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sunsmile.bmp";
+LPTSTR sunGaspTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sungasp.bmp";
 
-DrawObject* trees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Trees.obj");
-LPTSTR treesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\treestexture.bmp";
+CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Swimmer.obj", 2);
+LPTSTR swimmerTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\swimmertexture.bmp";
+
+DrawObject* trees = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Trees.obj");
+LPTSTR treesTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\treestexture.bmp";
 
 GLuint textures[8];
 
 GLuint titleTextID;
 GLuint dolphinTextID;
 GLuint arenaTextID;
+GLuint waterTextID;
 GLuint skyTextID;
 GLuint sunSmileTextID;
 GLuint sunGaspTextID;
@@ -79,15 +81,19 @@ GLuint treesTextID;
 bool specialKeys[1000] = {0};
 bool* keyStates = new bool[256];
 
-float tranX = 0.0;
-float tranY = 0.0;
-float tranZ = 0.0;
-float rotY = 0.0;
-float rotX = -3.0;
-float rotZ = 0.0;
+float tranX;
+float tranY;
+float tranZ;
+float rotY;
+float rotX;
+float rotZ;
 
-bool InMainMenu = true;
-int timeLeft = 99;  //TIMER FOR HOW LONG THE GAME LASTs
+bool InMainMenu;
+bool victory;
+bool gameover;
+int score;
+char scoreChar[2];
+int timeLeft;
 char time[2];
 
 GLvoid HandleKeyboardInput();
@@ -100,6 +106,9 @@ GLvoid GLKeyUp(unsigned char key, int x, int y);
 GLvoid SpecialKeys(int key, int x, int y);
 GLvoid SpecialKeysUp(int key, int x, int y);
 void CleanUp();
+void IncrementScore();
+void LaunchMenu();
+void GameOver();
 void NewSwimmerPosition();
 bool IsCollision();
 
@@ -110,7 +119,7 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
 
 void startBackgroundMusic(){
 	System::Media::SoundPlayer^ backgroundmusic = gcnew System::Media::SoundPlayer();
-	backgroundmusic->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\musicLoop.wav";
+	backgroundmusic->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\musicLoop.wav";
 	backgroundmusic->Load();
 	backgroundmusic->PlayLooping();
 }
@@ -131,12 +140,14 @@ static void timer(int value)
 		}
 		else
 		{
-			std::cout<<"Game Over"<<endl;
-			//system("pause");
+			GameOver();
 		}
 		break;
 	case 1:
 		sunTextID = sunSmileTextID;
+		break;
+	case 2:
+		LaunchMenu();
 		break;
 	}
 }
@@ -152,7 +163,6 @@ int main(int argc, char* argv[]){
 	glutInitWindowPosition(100, 50);
 	glutCreateWindow(windowName);
 	glutFullScreen();
-	startBackgroundMusic();
 
 	InitGL();
 
@@ -164,13 +174,54 @@ int main(int argc, char* argv[]){
 	glutSpecialFunc(SpecialKeys);
 	glutSpecialUpFunc(SpecialKeysUp);
 	glutSetCursor(GLUT_CURSOR_NONE);
-	timer(0);
+	LaunchMenu();
 	glutMainLoop();
 
 	return 0;
 }
 
 void CleanUp(){
+}
+
+void LaunchMenu(){
+	InMainMenu = true;
+	victory = false;
+	gameover = false;
+	startBackgroundMusic();
+	tranX = 0.0;
+	tranY = 0.0;
+	tranZ = 0.0;
+	rotY = 0.0;
+	rotX = -3.0;
+	rotZ = 0.0;
+}
+
+void PlayGame(){
+	dolphin->translation = Vector3f(0, -19, -40);
+	dolphin->rotation = Vector3f(0, 180, 0);
+	dolphin->rotateFirst = 1;
+	dolphin->rotateSecond = 0;
+	dolphin->rotateThird = 2;
+	arena->translation = Vector3f(0, -188, -6.9);
+	arena->scale = Vector3f(100, 100, 100);
+	water->translation = Vector3f(0, -188, -6.9);
+	water->scale = Vector3f(100, 100, 100);
+	sky->translation = Vector3f(0, -188 , -6.9);
+	sky->scale = Vector3f(120, 120, 120);
+	sun->translation = Vector3f(0, -188, -6.9);
+	sun->scale = Vector3f(120, 120, 120);
+	sunTextID = sunSmileTextID;
+	NewSwimmerPosition();
+	swimmer->scale = Vector3f(40, 40, 40);
+	swimmer->bobbingVelocity = 0;
+	trees->translation = Vector3f(0, -220 , -6.9);
+	trees->scale = Vector3f(120, 120, 120);
+
+	InMainMenu = false;
+	score = 0;
+	itoa(score,scoreChar,10);
+	timeLeft = 99;
+	timer(0);
 }
 
 GLvoid InitGL(){
@@ -194,58 +245,43 @@ GLvoid InitGL(){
 	title->rotation = Vector3f(103.5, 180, 0);
 
 	NeHeLoadBitmap(dolphinSkin, dolphinTextID, false);
-	dolphin->translation = Vector3f(1.2, -5.4, -20);
-	dolphin->rotation = Vector3f(-30, -40, -20);
-
 	NeHeLoadBitmap(arenaTexture, arenaTextID, false);
-	arena->translation = Vector3f(0, -188, -6.9);
-	arena->scale = Vector3f(100, 100, 100);
-
+	NeHeLoadBitmap(waterTexture, waterTextID, true);
 	NeHeLoadBitmap(skyTexture, skyTextID, false);
-	sky->translation = Vector3f(0, -188 , -6.9);
-	sky->scale = Vector3f(120, 120, 120);
-
 	NeHeLoadBitmap(sunGaspTexture, sunGaspTextID, true);
 	NeHeLoadBitmap(sunSmileTexture, sunSmileTextID, true);
-	sun->translation = Vector3f(0, -188, -6.9);
-	sun->scale = Vector3f(120, 120, 120);
-	sunTextID = sunSmileTextID;
-
 	NeHeLoadBitmap(swimmerTexture, swimmerTextID, false);
-	NewSwimmerPosition();
-	swimmer->scale = Vector3f(40, 40, 40);
-	swimmer->bobbingVelocity = 0;
-
 	NeHeLoadBitmap(treesTexture, treesTextID, true);
-	trees->translation = Vector3f(0, -220 , -6.9);
-	trees->scale = Vector3f(120, 120, 120);
 }
 
 void moveDolphin(){
-	tranZ += dolphin->velocity * cos(rotY * (M_PI / 180));
-	tranX -= dolphin->velocity * sin(rotY * M_PI / 180);
 	float zMove = dolphin->velocity * cos(dolphin->rotation.y * (M_PI / 180));
-	float yMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180);
-	dolphin->translation.z += zMove;
-	dolphin->translation.x += yMove;
-	sky->translation.z += zMove;
-	sky->translation.x += yMove;
-	sun->translation.z += zMove;
-	sun->translation.x += yMove;
+	float xMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180);
+	float dolphinDist = sqrtf(pow(dolphin->translation.z + zMove,2) + pow(dolphin->translation.x + xMove,2));
+	if (dolphinDist < 770) {
+		tranZ += dolphin->velocity * cos(rotY * (M_PI / 180));
+		tranX -= dolphin->velocity * sin(rotY * M_PI / 180);
+		dolphin->translation.z += zMove;
+		dolphin->translation.x += xMove;
+		sky->translation.z += zMove;
+		sky->translation.x += xMove;
+		sun->translation.z += zMove;
+		sun->translation.x += xMove;
+	}
 	if(!specialKeys[GLUT_KEY_UP] && !specialKeys[GLUT_KEY_DOWN])
 		dolphin->velocity *= .95;
 	if(!specialKeys[GLUT_KEY_LEFT] && !specialKeys[GLUT_KEY_RIGHT])
 		dolphin->rotation.z *= .9;
-	dolphin->rotation.x = (dolphin->velocity * 0.5) + 3*(dolphin->translation.y+12) - 3*(dolphin->velocity-1)+15;
+	dolphin->rotation.x = (dolphin->velocity * 0.5) + 3*(dolphin->translation.y+12) - 3*(dolphin->velocity-1)+23;
 	rotX = (dolphin->velocity)*.7 - 3;
 	if (dolphin->velocity < .2 && dolphin->velocity > -.2)
 		dolphin->velocity = 0;
 	if(!specialKeys[GLUT_KEY_UP]){
-		if (dolphin->bobbingVelocity >= 0 && dolphin->translation.y <= -16)
+		if (dolphin->bobbingVelocity >= 0 && dolphin->translation.y <= -17.5)
 			dolphin->translation.y += .01;
-		else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -16)
+		else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -17.5)
 			dolphin->translation.y -= .07;
-		else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -16.5)
+		else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -18)
 			dolphin->translation.y -= .01;
 		else
 			dolphin->bobbingVelocity *= -1;
@@ -270,15 +306,10 @@ void bobSwimmer()
 
 void updateValues()
 {
-	if (!InMainMenu) {
-		moveDolphin();
-		bobSwimmer();
-		if(keyStates[KEYBOARD_SPACE]){
-			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-			dolphinlaugh->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav";
-			dolphinlaugh->Load();
-			dolphinlaugh->Play();
-		}
+	moveDolphin();
+	bobSwimmer();
+	if(keyStates[KEYBOARD_SPACE]){
+		// Jump
 	}
 }
 
@@ -348,17 +379,17 @@ GLvoid DrawGLScene(){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	updateValues();
 
 	if (IsCollision())
 	{
+		IncrementScore();
 		NewSwimmerPosition();
 		sunTextID = sunGaspTextID;
 		glutTimerFunc(1000, timer, 1);
 	}
 
-	if (InMainMenu) {
-
+	if (InMainMenu)
+	{
 		glViewport(0, 0, windowWidth, windowHeight);
 		glRotatef(rotX-10,1.0f,0.0f,0.0f);
 		glRotatef(rotY,0.0f,1.0f,0.0f);
@@ -370,11 +401,24 @@ GLvoid DrawGLScene(){
 		glPopMatrix();
 
 	} else { // In Game
+
+		updateValues();
 		glViewport(0, 0, windowWidth, windowHeight);
 
 		glPushMatrix();
 			glDisable(GL_TEXTURE_2D);
-			//glColor3f(1, 0, 0);
+			glTranslatef(0, 14, -40);
+			glRasterPos2f(0,0);
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,scoreChar[0]);
+			if(score > 9)
+			{
+				glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,scoreChar[1]);
+			}
+			glEnable(GL_TEXTURE_2D);
+		glPopMatrix();
+
+		glPushMatrix();
+			glDisable(GL_TEXTURE_2D);
 			glTranslatef(26, 14, -40);
 			glRasterPos2f(0,0);
 			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,time[0]);
@@ -391,10 +435,6 @@ GLvoid DrawGLScene(){
 		glRotatef(rotZ,0.0f,0.0f,1.0f);
 		glTranslatef(0, 0, 40);
 		glTranslatef(tranX,tranY,tranZ);
-
-		glPushMatrix();
-		draw(arena, arenaTextID);
-		glPopMatrix();
 
 		glPushMatrix();
 		draw(sky, skyTextID);
@@ -414,6 +454,14 @@ GLvoid DrawGLScene(){
 
 		glPushMatrix();
 		draw(dolphin, dolphinTextID);
+		glPopMatrix();
+
+		glPushMatrix();
+		draw(arena, arenaTextID);
+		glPopMatrix();
+
+		glPushMatrix();
+		draw(water, waterTextID);
 		glPopMatrix();
 	}
 
@@ -448,12 +496,7 @@ GLvoid GLKeyDown(unsigned char key, int x, int y){
 
 	if(key == KEYBOARD_ENTER && InMainMenu)
 	{
-		InMainMenu = false;
-		dolphin->translation = Vector3f(0, -14.3, -40);
-		dolphin->rotation = Vector3f(0, 180, 0);
-		dolphin->rotateFirst = 1;
-		dolphin->rotateSecond = 0;
-		dolphin->rotateThird = 2;
+		PlayGame();
 	}
 
 	if (!InMainMenu)
@@ -508,7 +551,7 @@ GLvoid SpecialKeysUp(int key, int x, int y){
 }
 
 GLvoid HandleKeyboardInput(){
-	if(!InMainMenu){
+	if(!InMainMenu && !gameover && !victory){
 		if(specialKeys[GLUT_KEY_LEFT]){
 			float turnAmount = 1.8*fabs(dolphin->velocity/6)+0.2;
 			rotY += -turnAmount;
@@ -526,9 +569,9 @@ GLvoid HandleKeyboardInput(){
 		if(specialKeys[GLUT_KEY_UP]){
 			if (dolphin->velocity <= 3)
 				dolphin->velocity += .3;
-			if (dolphin->bobbingVelocity >= 0 && dolphin->translation.y <= -14)
+			if (dolphin->bobbingVelocity >= 0 && dolphin->translation.y <= -15.5)
 				dolphin->translation.y += .1;
-			else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -16.5)
+			else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -18)
 				dolphin->translation.y -= .1;
 			else
 				dolphin->bobbingVelocity *= -1;
@@ -554,6 +597,32 @@ void NewSwimmerPosition()
 	swimmer->translation = Vector3f(distance * cos(angle), -12.35, distance * sin(angle));
 	swimmer->rotation.y = faceAngle;
 	swimmer->bobbingVelocity = 0;
+}
+
+void Victory()
+{
+	victory = true;
+	System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
+	dolphinlaugh->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav";
+	dolphinlaugh->Load();
+	dolphinlaugh->Play();
+	glutTimerFunc(3000, timer, 2);
+	swimmer->translation = Vector3f(0, -1000, 0);
+}
+
+void GameOver()
+{
+	gameover = true;
+	glutTimerFunc(3000, timer, 2);
+	swimmer->translation = Vector3f(0, -1000, 0);
+}
+
+void IncrementScore()
+{
+	score++;
+	itoa(score,scoreChar,10);
+	if (score >= 14)
+		Victory();
 }
 
 #ifdef WIN32
