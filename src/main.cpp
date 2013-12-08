@@ -46,6 +46,23 @@ int texID = 0;
 DrawObject* title = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj");
 LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
 
+DrawObject* headsBox = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\HeadsBox.obj");
+LPTSTR heads14 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads14.bmp";
+LPTSTR heads13 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads13.bmp";
+LPTSTR heads12 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads12.bmp";
+LPTSTR heads11 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads11.bmp";
+LPTSTR heads10 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads10.bmp";
+LPTSTR heads9 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads9.bmp";
+LPTSTR heads8 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads8.bmp";
+LPTSTR heads7 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads7.bmp";
+LPTSTR heads6 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads6.bmp";
+LPTSTR heads5 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads5.bmp";
+LPTSTR heads4 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads4.bmp";
+LPTSTR heads3 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads3.bmp";
+LPTSTR heads2 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads2.bmp";
+LPTSTR heads1 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads1.bmp";
+LPTSTR heads0 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads0.bmp";
+
 DrawObject* numBox1 = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
 DrawObject* colonBox = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
 DrawObject* numBox2 = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
@@ -84,10 +101,23 @@ LPTSTR swimmerTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttac
 DrawObject* trees = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Trees.obj");
 LPTSTR treesTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\treestexture.bmp";
 
-GLuint textures[8];
-
-
 GLuint titleTextID;
+GLuint headsBoxTextID;
+GLuint heads14TextID;
+GLuint heads13TextID;
+GLuint heads12TextID;
+GLuint heads11TextID;
+GLuint heads10TextID;
+GLuint heads9TextID;
+GLuint heads8TextID;
+GLuint heads7TextID;
+GLuint heads6TextID;
+GLuint heads5TextID;
+GLuint heads4TextID;
+GLuint heads3TextID;
+GLuint heads2TextID;
+GLuint heads1TextID;
+GLuint heads0TextID;
 GLuint numBox1TextID;
 GLuint colonTextID;
 GLuint numBox2TextID;
@@ -314,7 +344,7 @@ void PlayGame(){
 
 	InMainMenu = false;
 	score = 0;
-	itoa(score,scoreChar,10);
+	headsBoxTextID = heads14TextID;
 	numBox1TextID = number2TextID;
 	numBox2TextID = number0TextID;
 	numBox3TextID = number0TextID;
@@ -341,6 +371,25 @@ GLvoid InitGL(){
 	title->translation = Vector3f(-.05, 3.89, -16.9);
 	title->scale = Vector3f(1.6, 1.55, 1.5);
 	title->rotation = Vector3f(103.5, 180, 0);
+
+	NeHeLoadBitmap(heads14, heads14TextID, true);
+	NeHeLoadBitmap(heads13, heads13TextID, true);
+	NeHeLoadBitmap(heads12, heads12TextID, true);
+	NeHeLoadBitmap(heads11, heads11TextID, true);
+	NeHeLoadBitmap(heads10, heads10TextID, true);
+	NeHeLoadBitmap(heads9, heads9TextID, true);
+	NeHeLoadBitmap(heads8, heads8TextID, true);
+	NeHeLoadBitmap(heads7, heads7TextID, true);
+	NeHeLoadBitmap(heads6, heads6TextID, true);
+	NeHeLoadBitmap(heads5, heads5TextID, true);
+	NeHeLoadBitmap(heads4, heads4TextID, true);
+	NeHeLoadBitmap(heads3, heads3TextID, true);
+	NeHeLoadBitmap(heads2, heads2TextID, true);
+	NeHeLoadBitmap(heads1, heads1TextID, true);
+	NeHeLoadBitmap(heads0, heads0TextID, true);
+	headsBox->translation = Vector3f(-5.1, 3.35, -10);
+	headsBox->scale = Vector3f(0.23, 0.23, 0.23);
+	headsBox->rotation = Vector3f(90, 0, 0);
 
 	NeHeLoadBitmap(number0, number0TextID, true);
 	NeHeLoadBitmap(number1, number1TextID, true);
@@ -568,6 +617,10 @@ GLvoid DrawGLScene(){
 		glPopMatrix();
 
 		glPushMatrix();
+		draw(headsBox, headsBoxTextID);
+		glPopMatrix();
+
+		glPushMatrix();
 		draw(numBox1, numBox1TextID);
 		glPopMatrix();
 
@@ -675,14 +728,14 @@ GLvoid SpecialKeysUp(int key, int x, int y){
 GLvoid HandleKeyboardInput(){
 	if(!InMainMenu && !gameover && !victory){
 		if(specialKeys[GLUT_KEY_LEFT]){
-			float turnAmount = 1.8*fabs(dolphin->velocity/6)+0.2;
+			float turnAmount = dolphin->velocity/3;
 			rotY += -turnAmount;
 			dolphin->rotation.y += turnAmount;
 			if (dolphin->rotation.z >= -10)
 				dolphin->rotation.z -= 1;
 		}
 		if(specialKeys[GLUT_KEY_RIGHT]){
-			float turnAmount = 1.8*fabs(dolphin->velocity/6)+0.2;
+			float turnAmount = dolphin->velocity/3;
 			rotY += turnAmount;
 			dolphin->rotation.y += -turnAmount;
 			if (dolphin->rotation.z <= 10)
@@ -724,10 +777,6 @@ void NewSwimmerPosition()
 void Victory()
 {
 	victory = true;
-	System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-	dolphinlaugh->SoundLocation = "C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav";
-	dolphinlaugh->Load();
-	dolphinlaugh->Play();
 	glutTimerFunc(3000, timer, 2);
 	swimmer->translation = Vector3f(0, -1000, 0);
 }
@@ -739,10 +788,44 @@ void GameOver()
 	swimmer->translation = Vector3f(0, -1000, 0);
 }
 
+void updateSwimmerHeads(){
+	if (score == 0)
+		headsBoxTextID = heads14TextID;
+	else if (score == 1)
+		headsBoxTextID = heads13TextID;
+	else if (score == 2)
+		headsBoxTextID = heads12TextID;
+	else if (score == 3)
+		headsBoxTextID = heads11TextID;
+	else if (score == 4)
+		headsBoxTextID = heads10TextID;
+	else if (score == 5)
+		headsBoxTextID = heads9TextID;
+	else if (score == 6)
+		headsBoxTextID = heads8TextID;
+	else if (score == 7)
+		headsBoxTextID = heads7TextID;
+	else if (score == 8)
+		headsBoxTextID = heads6TextID;
+	else if (score == 9)
+		headsBoxTextID = heads5TextID;
+	else if (score == 10)
+		headsBoxTextID = heads4TextID;
+	else if (score == 11)
+		headsBoxTextID = heads3TextID;
+	else if (score == 12)
+		headsBoxTextID = heads2TextID;
+	else if (score == 13)
+		headsBoxTextID = heads1TextID;
+	else
+		headsBoxTextID = heads0TextID;
+
+}
+
 void IncrementScore()
 {
 	score++;
-	itoa(score,scoreChar,10);
+	updateSwimmerHeads();
 	if (score >= 14)
 		Victory();
 }
