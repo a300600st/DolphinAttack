@@ -14,6 +14,7 @@
 #include <cmath>
 #include <iostream>
 #include <windows.h>
+#include <irrKlang.h>
 
 #using <System.Drawing.dll>
 #using <System.dll>
@@ -21,7 +22,9 @@
 
 using namespace std;
 using namespace System;
-using namespace System::Media;
+using namespace irrklang;
+
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
 #define DEFAULT_WINDOW_WIDTH 1366
 #define DEFAULT_WINDOW_HEIGHT 768
@@ -90,6 +93,8 @@ bool InMainMenu = true;
 int timeLeft = 99;  //TIMER FOR HOW LONG THE GAME LASTs
 char time[2];
 
+ISoundEngine* engine;
+
 GLvoid HandleKeyboardInput();
 GLvoid InitGL(GLvoid);
 GLvoid DrawGLScene(GLvoid);
@@ -109,10 +114,8 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
 #endif 
 
 void startBackgroundMusic(){
-	System::Media::SoundPlayer^ backgroundmusic = gcnew System::Media::SoundPlayer();
-	backgroundmusic->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\musicLoop.wav";
-	backgroundmusic->Load();
-	backgroundmusic->PlayLooping();
+	// play some sound stream, looped
+	engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\musicLoop.wav", true);
 }
 
 
@@ -146,6 +149,16 @@ int main(int argc, char* argv[]){
 	{
 		keyStates[i] = false;
 	}
+
+	// start the sound engine with default parameters
+	engine = createIrrKlangDevice();
+
+	if (!engine)
+	{
+		std::cout << "Sound error!" << std::endl;
+		return 0; // error starting up the engine
+	}
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(windowWidth, windowHeight);
@@ -167,6 +180,7 @@ int main(int argc, char* argv[]){
 	timer(0);
 	glutMainLoop();
 
+	engine->drop();
 	return 0;
 }
 
@@ -273,12 +287,6 @@ void updateValues()
 	if (!InMainMenu) {
 		moveDolphin();
 		bobSwimmer();
-		if(keyStates[KEYBOARD_SPACE]){
-			System::Media::SoundPlayer^ dolphinlaugh = gcnew System::Media::SoundPlayer();
-			dolphinlaugh->SoundLocation = "C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav";
-			dolphinlaugh->Load();
-			dolphinlaugh->Play();
-		}
 	}
 }
 
@@ -352,6 +360,7 @@ GLvoid DrawGLScene(){
 
 	if (IsCollision())
 	{
+		engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav");
 		NewSwimmerPosition();
 		sunTextID = sunGaspTextID;
 		glutTimerFunc(1000, timer, 1);
