@@ -155,9 +155,9 @@ float rotX;
 float rotZ;
 
 bool InMainMenu;
-bool Credits;
-bool victory;
-bool gameover;
+bool InCredits;
+bool InVictoryScene;
+bool InGameOverScene;
 int score;
 int timeLeft;
 
@@ -177,6 +177,8 @@ void IncrementScore();
 void LaunchMenu();
 void GameOver();
 void NewSwimmerPosition();
+void updateValues();
+void ShowCredits();
 bool IsCollision();
 
 #ifdef WIN32
@@ -244,16 +246,19 @@ static void timer(int value)
 	{
 	//Game Timer
 	case 0:
-		if(timeLeft > 0)
+		if (!InMainMenu && !InVictoryScene && !InGameOverScene && !InCredits)
 		{
-			timeLeft--;
-			updateTimeTextures();
-			glutPostRedisplay();
-			glutTimerFunc(1000, timer, 0);
-		}
-		else
-		{
-			GameOver();
+			if(timeLeft > 0)
+			{
+				timeLeft--;
+				updateTimeTextures();
+				glutPostRedisplay();
+				glutTimerFunc(1000, timer, 0);
+			}
+			else
+			{
+				GameOver();
+			}
 		}
 		break;
 	case 1:
@@ -261,6 +266,17 @@ static void timer(int value)
 		break;
 	case 2:
 		LaunchMenu();
+		break;
+	case 3:
+		if (!InMainMenu && !InCredits)
+		{
+			updateValues();
+			glutTimerFunc(25, timer, 3);
+		}
+		break;
+	case 4:
+		ShowCredits();
+		glutTimerFunc(25000, timer, 2);
 		break;
 	}
 }
@@ -311,8 +327,9 @@ void CleanUp(){
 
 void LaunchMenu(){
 	InMainMenu = true;
-	victory = false;
-	gameover = false;
+	InVictoryScene = false;
+	InGameOverScene = false;
+	InCredits = false;
 	tranX = 0.0;
 	tranY = 0.0;
 	tranZ = 0.0;
@@ -322,7 +339,7 @@ void LaunchMenu(){
 }
 
 void ShowCredits(){
-	Credits = true;
+	InCredits = true;
 	tranX = 0.0;
 	tranY = 0.0;
 	tranZ = 0.0;
@@ -338,6 +355,7 @@ void PlayGame(){
 	dolphin->rotateFirst = 1;
 	dolphin->rotateSecond = 0;
 	dolphin->rotateThird = 2;
+	dolphin->velocity = 0;
 	arena->translation = Vector3f(0, -188, -6.9);
 	arena->scale = Vector3f(100, 100, 100);
 	water->translation = Vector3f(0, -188, -6.9);
@@ -355,7 +373,6 @@ void PlayGame(){
 	trees->scale = Vector3f(120, 120, 120);
 
 	InMainMenu = false;
-	Credits = false;
 	score = 0;
 	headsBoxTextID = heads14TextID;
 	numBox1TextID = number2TextID;
@@ -363,6 +380,7 @@ void PlayGame(){
 	numBox3TextID = number0TextID;
 	timeLeft = 120;
 	timer(0);
+	timer(3);
 }
 
 GLvoid InitGL(){
@@ -449,12 +467,12 @@ GLvoid InitGL(){
 }
 
 void moveDolphin(){
-	float zMove = dolphin->velocity * cos(dolphin->rotation.y * (M_PI / 180));
-	float xMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180);
+	float zMove = dolphin->velocity * cos(dolphin->rotation.y * (M_PI / 180)) * 2;
+	float xMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180) * 2;
 	float dolphinDist = sqrtf(pow(dolphin->translation.z + zMove,2) + pow(dolphin->translation.x + xMove,2));
 	if (dolphinDist < 770) {
-		tranZ += dolphin->velocity * cos(rotY * (M_PI / 180));
-		tranX -= dolphin->velocity * sin(rotY * M_PI / 180);
+		tranZ += dolphin->velocity * cos(rotY * (M_PI / 180)) * 2;
+		tranX -= dolphin->velocity * sin(rotY * M_PI / 180) * 2;
 		dolphin->translation.z += zMove;
 		dolphin->translation.x += xMove;
 		sky->translation.z += zMove;
@@ -466,17 +484,17 @@ void moveDolphin(){
 		dolphin->velocity *= .95;
 	if(!specialKeys[GLUT_KEY_LEFT] && !specialKeys[GLUT_KEY_RIGHT])
 		dolphin->rotation.z *= .9;
-	dolphin->rotation.x = (dolphin->velocity * 0.5) + 3*(dolphin->translation.y+12) - 3*(dolphin->velocity-1)+23;
-	rotX = (dolphin->velocity)*.7 - 3;
-	if (dolphin->velocity < .2 && dolphin->velocity > -.2)
+	dolphin->rotation.x = (dolphin->velocity * 1.5) + 3*(dolphin->translation.y+12) - 3*(dolphin->velocity-1)+23;
+	rotX = (dolphin->velocity) - 3;
+	if (dolphin->velocity < .15 && dolphin->velocity > -.15)
 		dolphin->velocity = 0;
 	if(!specialKeys[GLUT_KEY_UP]){
 		if (dolphin->bobbingVelocity >= 0 && dolphin->translation.y <= -17.5)
-			dolphin->translation.y += .01;
+			dolphin->translation.y += .02;
 		else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -17.5)
-			dolphin->translation.y -= .07;
+			dolphin->translation.y -= .1;
 		else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -18)
-			dolphin->translation.y -= .01;
+			dolphin->translation.y -= .02;
 		else
 			dolphin->bobbingVelocity *= -1;
 	}
@@ -486,13 +504,13 @@ void bobSwimmer()
 {
 	if (swimmer->translation.y > -12.75)
 	{
-		swimmer->bobbingVelocity -= .0007;
-		swimmer->rotation.x += .05;
+		swimmer->bobbingVelocity -= .003;
+		swimmer->rotation.x += .1;
 	}
 	else
 	{
-		swimmer->bobbingVelocity += .0007;
-		swimmer->rotation.x -= .05;
+		swimmer->bobbingVelocity += .003;
+		swimmer->rotation.x -= .1;
 	}
 
 	swimmer->translation.y += swimmer->bobbingVelocity;
@@ -592,7 +610,7 @@ GLvoid DrawGLScene(){
 		draw(title, titleTextID);
 		glPopMatrix();
 
-	} else if (Credits)
+	} else if (InCredits)
 	{
 		glViewport(0, 0, windowWidth, windowHeight);
 		glRotatef(rotX-10,1.0f,0.0f,0.0f);
@@ -614,7 +632,7 @@ GLvoid DrawGLScene(){
 	else
 	{ // In Game
 
-		updateValues();
+		//updateValues();
 		glViewport(0, 0, windowWidth, windowHeight);
 
 		glPushMatrix();
@@ -764,7 +782,7 @@ GLvoid SpecialKeysUp(int key, int x, int y){
 }
 
 GLvoid HandleKeyboardInput(){
-	if(!InMainMenu && !gameover && !victory){
+	if(!InMainMenu && !InGameOverScene && !InVictoryScene){
 		if(specialKeys[GLUT_KEY_LEFT]){
 			float turnAmount = dolphin->velocity/2.8+.5;
 			rotY += -turnAmount;
@@ -814,17 +832,14 @@ void NewSwimmerPosition()
 
 void Victory()
 {
-	victory = true;
-	ShowCredits();
-	glutTimerFunc(15000, timer, 2);
-	swimmer->translation = Vector3f(0, -1000, 0);
+	InVictoryScene = true;
+	glutTimerFunc(3000, timer, 4);
 }
 
 void GameOver()
 {
-	gameover = true;
+	InGameOverScene = true;
 	glutTimerFunc(3000, timer, 2);
-	swimmer->translation = Vector3f(0, -1000, 0);
 }
 
 void updateSwimmerHeads(){
