@@ -101,6 +101,9 @@ LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\s
 DrawObject* trees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Trees.obj");
 LPTSTR treesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\treestexture.bmp";
 
+DrawObject* backTrees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\BackTrees.obj");
+LPTSTR backTreesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\backtreestexture.bmp";
+
 GLuint titleTextID;
 GLuint creditsTextID;
 GLuint creditsScrollTextID;
@@ -143,6 +146,7 @@ GLuint sunGaspTextID;
 GLuint sunTextID;
 GLuint swimmerTextID;
 GLuint treesTextID;
+GLuint backTreesTextID;
 
 bool specialKeys[1000] = {0};
 bool* keyStates = new bool[256];
@@ -353,6 +357,8 @@ void PlayGame(){
 	swimmer->bobbingVelocity = 0;
 	trees->translation = Vector3f(0, -220 , -6.9);
 	trees->scale = Vector3f(120, 120, 120);
+	backTrees->translation = Vector3f(0, -220 , -6.9);
+	backTrees->scale = Vector3f(120, 120, 120);
 
 	InMainMenu = false;
 	Credits = false;
@@ -446,6 +452,7 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(sunSmileTexture, sunSmileTextID, true);
 	NeHeLoadBitmap(swimmerTexture, swimmerTextID, false);
 	NeHeLoadBitmap(treesTexture, treesTextID, true);
+	NeHeLoadBitmap(backTreesTexture, backTreesTextID, true);
 }
 
 void moveDolphin(){
@@ -632,6 +639,10 @@ GLvoid DrawGLScene(){
 
 			glPushMatrix();
 			draw(sun, sunTextID);
+			glPopMatrix();
+
+			glPushMatrix();
+			draw(backTrees, backTreesTextID);
 			glPopMatrix();
 
 			glPushMatrix();
