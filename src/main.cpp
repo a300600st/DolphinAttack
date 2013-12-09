@@ -101,8 +101,8 @@ LPTSTR swimmerTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttac
 DrawObject* trees = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Trees.obj");
 LPTSTR treesTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\treestexture.bmp";
 
-DrawObject* backTrees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\BackTrees.obj");
-LPTSTR backTreesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\backtreestexture.bmp";
+DrawObject* backTrees = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\BackTrees.obj");
+LPTSTR backTreesTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\backtreestexture.bmp";
 
 GLuint titleTextID;
 GLuint creditsTextID;
@@ -280,7 +280,7 @@ static void timer(int value)
 		break;
 	case 4:
 		ShowCredits();
-		glutTimerFunc(25000, timer, 2);
+		glutTimerFunc(30000, timer, 2);
 		break;
 	}
 }
