@@ -507,8 +507,6 @@ GLvoid InitGL(){
 void moveDolphin(){
 	float zMove = dolphin->velocity * cos(dolphin->rotation.y * (M_PI / 180)) * 2;
 	float xMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180) * 2;
-	monster->translation.z += monster->velocity * cos(monsterDir * (M_PI / 180)) * 2;
-	monster->translation.x += monster->velocity * sin(monsterDir * M_PI / 180) * 2;
 	float dolphinDist = sqrtf(pow(dolphin->translation.z + zMove,2) + pow(dolphin->translation.x + xMove,2));
 	if (dolphinDist < 770) {
 		tranZ += dolphin->velocity * cos(rotY * (M_PI / 180)) * 2;
@@ -666,6 +664,8 @@ GLvoid DrawGLScene(){
 	{
 		monster->velocity = dolphin->velocity;
 		monsterDir = dolphin->rotation.y;
+		monster->translation.z += monster->velocity * cos(monsterDir * (M_PI / 180)) * 2;
+		monster->translation.x += monster->velocity * sin(monsterDir * M_PI / 180) * 2;
 	}
 
 	if (InMainMenu)
