@@ -269,7 +269,8 @@ static void timer(int value)
 		sunTextID = sunSmileTextID;
 		break;
 	case 2:
-		LaunchMenu();
+		if (InCredits || InGameOverScene || InVictoryScene)
+			LaunchMenu();
 		break;
 	case 3:
 		if (!InMainMenu && !InCredits)
@@ -600,7 +601,6 @@ GLvoid DrawGLScene(){
 	{
 		engine->play2D("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav");
 		IncrementScore();
-		NewSwimmerPosition();
 		sunTextID = sunGaspTextID;
 		glutTimerFunc(1000, timer, 1);
 	}
@@ -795,14 +795,14 @@ GLvoid SpecialKeysUp(int key, int x, int y){
 GLvoid HandleKeyboardInput(){
 	if(!InMainMenu && !InGameOverScene && !InVictoryScene){
 		if(specialKeys[GLUT_KEY_LEFT]){
-			float turnAmount = dolphin->velocity/2.8+.5;
+			float turnAmount = dolphin->velocity/2.8+.3;
 			rotY += -turnAmount;
 			dolphin->rotation.y += turnAmount;
 			if (dolphin->rotation.z >= -10)
 				dolphin->rotation.z -= 1;
 		}
 		if(specialKeys[GLUT_KEY_RIGHT]){
-			float turnAmount = dolphin->velocity/2.8+.5;
+			float turnAmount = dolphin->velocity/2.8+.3;
 			rotY += turnAmount;
 			dolphin->rotation.y += -turnAmount;
 			if (dolphin->rotation.z <= 10)
@@ -819,7 +819,7 @@ GLvoid HandleKeyboardInput(){
 				dolphin->bobbingVelocity *= -1;
 		}
 		if(specialKeys[GLUT_KEY_DOWN]){
-			if (dolphin->velocity >= -.5)
+			if (dolphin->velocity >= -1.2)
 				dolphin->velocity -= .2;
 		}
 	}
@@ -891,7 +891,12 @@ void IncrementScore()
 	score++;
 	updateSwimmerHeads();
 	if (score >= 14)
+	{
+		swimmer->translation.x = 9999;
 		Victory();
+	}
+	else
+		NewSwimmerPosition();
 }
 
 #ifdef WIN32
