@@ -319,25 +319,21 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		if (key == GLFW_KEY_LEFT)
 		{
 			keyLeft = true;
-			cout << "left" << endl;
 		}
 
 		if (key == GLFW_KEY_RIGHT)
 		{
 			keyRight = true;
-			cout << "right" << endl;
 		}
 
 		if (key == GLFW_KEY_UP)
 		{
 			keyUp = true;
-			cout << "up" << endl;
 		}
 
 		if (key == GLFW_KEY_DOWN)
 		{
 			keyDown = true;
-			cout << "down" << endl;
 		}
 	}
 	else if (action == GLFW_RELEASE)
@@ -345,25 +341,21 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		if (key == GLFW_KEY_LEFT)
 		{
 			keyLeft = false;
-			cout << "no left" << endl;
 		}
 
 		if (key == GLFW_KEY_RIGHT)
 		{
 			keyRight = false;
-			cout << "no right" << endl;
 		}
 
 		if (key == GLFW_KEY_UP)
 		{
 			keyUp = false;
-			cout << "no up" << endl;
 		}
 
 		if (key == GLFW_KEY_DOWN)
 		{
 			keyDown = false;
-			cout << "no down" << endl;
 		}
 	}
 }
@@ -668,9 +660,9 @@ void moveDolphin(double timePassed){
 	else
 	{
 		//jumping
-		dolphin->bobbSize = 5;
-		dolphin->bobbMid = -15;
-		dolphin->bobbPeriod = 1.75;
+		dolphin->bobbSize = 6.5;
+		dolphin->bobbMid = -15.5;
+		dolphin->bobbPeriod = 1.5;
 		dolphin->bobbAngle = 20;
 	}
 
@@ -679,8 +671,6 @@ void moveDolphin(double timePassed){
 
 void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, float bobbAngle, float bobbPeriod)
 {
-	float translationThreshold = .01;
-	float rotationThreshold = .001;
 	float blendFactor = .03;
 
 	if (bobbPeriod <= 0)
@@ -696,25 +686,11 @@ void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, f
 	float newY = bobbMid + bobbSize * sin(bobbProgress);
 	float newAngle = bobbAngle * cos(bobbProgress) * -1;
 
-	if (newY > object->translation.y + translationThreshold || newY < object->translation.y - translationThreshold)
-	{
-		// blend with current position
-		object->translation.y = object->translation.y + blendFactor * (newY - object->translation.y);
-	}
-	else
-	{
-		object->translation.y = newY;
-	}
+	// blend with current position
+	object->translation.y = object->translation.y + blendFactor * (newY - object->translation.y);
 
-	if (newY > object->rotation.x + rotationThreshold || newY < object->rotation.x - rotationThreshold)
-	{
-		// blend with current angle
-		object->rotation.x = object->rotation.x + blendFactor * (newAngle - object->rotation.x);
-	}
-	else
-	{
-		object->rotation.x = newAngle;
-	}
+	// blend with current angle
+	object->rotation.x = object->rotation.x + blendFactor * (newAngle - object->rotation.x);
 }
 
 void updateValues(double timePassed)
