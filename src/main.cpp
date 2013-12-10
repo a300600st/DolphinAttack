@@ -104,7 +104,7 @@ LPTSTR sunGaspTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttac
 CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Swimmer.obj", 2);
 LPTSTR swimmerTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\swimmertexture.bmp";
 
-CollisionObject* monster = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\mnster.obj",2);
+CollisionObject* monster = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\monster.obj",2);
 LPTSTR monsterTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\beachball.bmp";
 
 
@@ -395,7 +395,8 @@ void PlayGame(){
 	backTrees->translation = Vector3f(0, -220 , -6.9);
 	backTrees->scale = Vector3f(120, 120, 120);
 
-	monster->translation = Vector3f(0,-21,20);
+	monster->translation = Vector3f(0,4.5,880);
+	monster->rotation = Vector3f(0,180,0);
 	monster->bobbingVelocity = 0;
 
 	InMainMenu = false;
@@ -438,11 +439,11 @@ GLvoid InitGL(){
 	creditsScroll->scale = Vector3f(.6, .6, .6);
 	creditsScroll->rotation = Vector3f(90, 180, 0);
 
-	victory->translation = Vector3f(-10, .2, -14);
+	victory->translation = Vector3f(-10, .1, -14);
 	victory->scale = Vector3f(.6, .6, .6);
 	victory->rotation = Vector3f(90, 270, 0);
 
-	gameover->translation = Vector3f(-10, .2, -14);
+	gameover->translation = Vector3f(-10, .1, -14);
 	gameover->scale = Vector3f(.6, .6, .6);
 	gameover->rotation = Vector3f(90, 270, 0);
 
@@ -550,7 +551,7 @@ void bobSwimmer()
 		swimmer->bobbingVelocity += .003;
 		swimmer->rotation.x -= .1;
 	}
-	if (monster->translation.y > -21.4)
+	/*if (monster->translation.y > -21.4)
 	{
 		monster->bobbingVelocity -= .0007;
 		monster->rotation.x += .05;
@@ -559,17 +560,17 @@ void bobSwimmer()
 	{
 		monster->bobbingVelocity += .0007;
 		monster->rotation.x -= .05;
-	}
+	}*/
 
 	swimmer->translation.y += swimmer->bobbingVelocity;
-	monster->translation.y += monster->bobbingVelocity;
+	//monster->translation.y += monster->bobbingVelocity;
 }
 
 void updateValues()
 {
 	moveDolphin();
 	bobSwimmer();
-	if(monster->velocity > 0)
+	/*if(monster->velocity > 0)
 	{
 		float zMove = monster->velocity * cos(monsterDir * (M_PI / 180)) * 2;
 		float xMove = monster->velocity * sin(monsterDir * M_PI / 180) * 2;
@@ -582,7 +583,7 @@ void updateValues()
 		{
 			monster->velocity = 0;
 		}
-	}
+	}*/
 }
 
 void draw(DrawObject * object, GLuint textID)
@@ -660,13 +661,13 @@ GLvoid DrawGLScene(){
 		glutTimerFunc(1000, timer, 1);
 	}
 
-	if (hitMonster())
+	/*if (hitMonster())
 	{
 		monster->velocity = dolphin->velocity;
 		monsterDir = dolphin->rotation.y;
 		monster->translation.z += monster->velocity * cos(monsterDir * (M_PI / 180)) * 2;
 		monster->translation.x += monster->velocity * sin(monsterDir * M_PI / 180) * 2;
-	}
+	}*/
 
 	if (InMainMenu)
 	{
