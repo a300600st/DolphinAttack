@@ -46,6 +46,13 @@ DrawObject* creditsScroll = new DrawObject("C:\\Users\\Todd\\Desktop\\Fall 2013\
 LPTSTR creditsTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\creditsScreen.bmp";
 LPTSTR creditsScrollTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\creditsScroll.bmp";
 
+DrawObject* victory = new DrawObject("C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\failureOBJ.obj");
+LPTSTR victoryTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\victorytexture.bmp";
+DrawObject* gameover = new DrawObject("C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\failureOBJ.obj");
+LPTSTR gameoverTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\gameovertexture.bmp";
+
+
+
 DrawObject* headsBox = new DrawObject("C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\models\\HeadsBox.obj");
 LPTSTR heads14 = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\heads14.bmp";
 LPTSTR heads13 = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL\\textures\\heads13.bmp";
@@ -111,6 +118,8 @@ LPTSTR backTreesTexture = L"C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin at
 GLuint titleTextID;
 GLuint creditsTextID;
 GLuint creditsScrollTextID;
+GLuint victoryTextureID;
+GLuint gameoverTextureID;
 GLuint headsBoxTextID;
 GLuint heads14TextID;
 GLuint heads13TextID;
@@ -418,6 +427,8 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(titleTexture, titleTextID, false);
 	NeHeLoadBitmap(creditsTexture, creditsTextID, false);
 	NeHeLoadBitmap(creditsScrollTexture, creditsScrollTextID, true);
+	NeHeLoadBitmap(victoryTexture,victoryTextureID,true);
+	NeHeLoadBitmap(gameoverTexture,gameoverTextureID,true);
 
 	title->translation = Vector3f(-.05, 3.89, -16.9);
 	title->scale = Vector3f(1.6, 1.55, 1.5);
@@ -426,6 +437,14 @@ GLvoid InitGL(){
 	creditsScroll->translation = Vector3f(-.05, 3.89, -14);
 	creditsScroll->scale = Vector3f(.6, .6, .6);
 	creditsScroll->rotation = Vector3f(90, 180, 0);
+
+	victory->translation = Vector3f(-10, .8, -14);
+	victory->scale = Vector3f(.6, .6, .6);
+	victory->rotation = Vector3f(90, 270, 0);
+
+	gameover->translation = Vector3f(-10, .8, -14);
+	gameover->scale = Vector3f(.6, .6, .6);
+	gameover->rotation = Vector3f(90, 270, 0);
 
 	NeHeLoadBitmap(heads14, heads14TextID, true);
 	NeHeLoadBitmap(heads13, heads13TextID, true);
@@ -527,13 +546,19 @@ void bobSwimmer()
 	{
 		swimmer->bobbingVelocity -= .003;
 		swimmer->rotation.x += .1;
-		monster->bobbingVelocity -= .0007;
-		monster->rotation.x += .05;
 	}
 	else
 	{
 		swimmer->bobbingVelocity += .003;
 		swimmer->rotation.x -= .1;
+	}
+	if (monster->translation.y > -21.4)
+	{
+		monster->bobbingVelocity -= .0007;
+		monster->rotation.x += .05;
+	}
+	else
+	{
 		monster->bobbingVelocity += .0007;
 		monster->rotation.x -= .05;
 	}
@@ -746,6 +771,20 @@ GLvoid DrawGLScene(){
 		glPushMatrix();
 		draw(numBox3, numBox3TextID);
 		glPopMatrix();
+
+		if(InGameOverScene)
+		{
+			glPushMatrix();
+			draw(gameover, gameoverTextureID);
+			glPopMatrix();
+		}
+		else if(InVictoryScene)
+		{
+			glPushMatrix();
+			draw(victory, victoryTextureID);
+			glPopMatrix();
+		}
+
 	}
 
 	glFlush();
