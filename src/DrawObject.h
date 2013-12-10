@@ -37,7 +37,13 @@ public:
 	Vector3f translation;
 
 	float velocity;
-	float bobbingVelocity;
+	float angVelocity;
+
+	float bobbMid;
+	float bobbSize;
+	float bobbPeriod;
+	float bobbTime;
+	float bobbAngle;
 
 	int rotateFirst;
 	int rotateSecond;

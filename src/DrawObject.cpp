@@ -19,7 +19,12 @@ void DrawObject::Init(char* fileName, int* rotationOrder){
 	this->scale = Vector3f(1, 1, 1);
 	this->rotation = Vector3f(0, 0, 0);
 	this->velocity = 0;
-	this->bobbingVelocity = -1;
+	this->angVelocity = 0;
+	this->bobbMid = 0;
+	this->bobbSize = 0;
+	this->bobbPeriod = 0;
+	this->bobbTime = 0;
+	this->bobbAngle = 0;
 
 	std::ifstream file(fileName);
 	if(!file.good()){

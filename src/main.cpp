@@ -4,24 +4,24 @@
 #endif 
 
 #define _USE_MATH_DEFINES
-#include <GL/GL.h>
-#include <GL/GLU.h>
-#include <GL/glut.h>
 #include "DrawObject.h"
 #include "CollisionObject.h"
 #include <string>
 #include <cmath>
 #include <iostream>
-#include <windows.h>
 #include <irrKlang.h>
 
 #using <System.Drawing.dll>
 #using <System.dll>
 #using <System.Windows.Forms.dll>
 
+#define GLFW_DLL
+
 using namespace std;
 using namespace System;
 using namespace irrklang;
+
+#include <GLFW/glfw3.h>
 
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
@@ -40,66 +40,66 @@ int texID = 0;
 // C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
 // C:\\Users\\Ryan\\Documents\\DolphinAttack
 
-DrawObject* title = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Title.obj");
-LPTSTR titleTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\titletexture.bmp";
-DrawObject* creditsScroll = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\CreditsScroll.obj");
-LPTSTR creditsTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\creditsScreen.bmp";
-LPTSTR creditsScrollTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\creditsScroll.bmp";
+DrawObject* title = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj");
+LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
+DrawObject* creditsScroll = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\CreditsScroll.obj");
+LPTSTR creditsTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\creditsScreen.bmp";
+LPTSTR creditsScrollTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\creditsScroll.bmp";
 
-DrawObject* headsBox = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\HeadsBox.obj");
-LPTSTR heads14 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads14.bmp";
-LPTSTR heads13 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads13.bmp";
-LPTSTR heads12 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads12.bmp";
-LPTSTR heads11 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads11.bmp";
-LPTSTR heads10 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads10.bmp";
-LPTSTR heads9 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads9.bmp";
-LPTSTR heads8 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads8.bmp";
-LPTSTR heads7 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads7.bmp";
-LPTSTR heads6 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads6.bmp";
-LPTSTR heads5 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads5.bmp";
-LPTSTR heads4 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads4.bmp";
-LPTSTR heads3 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads3.bmp";
-LPTSTR heads2 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads2.bmp";
-LPTSTR heads1 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads1.bmp";
-LPTSTR heads0 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\heads0.bmp";
+DrawObject* headsBox = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\HeadsBox.obj");
+LPTSTR heads14 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads14.bmp";
+LPTSTR heads13 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads13.bmp";
+LPTSTR heads12 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads12.bmp";
+LPTSTR heads11 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads11.bmp";
+LPTSTR heads10 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads10.bmp";
+LPTSTR heads9 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads9.bmp";
+LPTSTR heads8 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads8.bmp";
+LPTSTR heads7 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads7.bmp";
+LPTSTR heads6 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads6.bmp";
+LPTSTR heads5 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads5.bmp";
+LPTSTR heads4 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads4.bmp";
+LPTSTR heads3 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads3.bmp";
+LPTSTR heads2 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads2.bmp";
+LPTSTR heads1 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads1.bmp";
+LPTSTR heads0 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads0.bmp";
 
-DrawObject* numBox1 = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
-DrawObject* colonBox = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
-DrawObject* numBox2 = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
-DrawObject* numBox3 = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\NumberBox.obj");
-LPTSTR number0 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number0.bmp";
-LPTSTR number1 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number1.bmp";
-LPTSTR number2 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number2.bmp";
-LPTSTR number3 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number3.bmp";
-LPTSTR number4 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number4.bmp";
-LPTSTR number5 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number5.bmp";
-LPTSTR number6 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number6.bmp";
-LPTSTR number7 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number7.bmp";
-LPTSTR number8 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number8.bmp";
-LPTSTR number9 = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\number9.bmp";
-LPTSTR colon = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\colon.bmp";
+DrawObject* numBox1 = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\NumberBox.obj");
+DrawObject* colonBox = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\NumberBox.obj");
+DrawObject* numBox2 = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\NumberBox.obj");
+DrawObject* numBox3 = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\NumberBox.obj");
+LPTSTR number0 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number0.bmp";
+LPTSTR number1 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number1.bmp";
+LPTSTR number2 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number2.bmp";
+LPTSTR number3 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number3.bmp";
+LPTSTR number4 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number4.bmp";
+LPTSTR number5 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number5.bmp";
+LPTSTR number6 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number6.bmp";
+LPTSTR number7 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number7.bmp";
+LPTSTR number8 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number8.bmp";
+LPTSTR number9 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number9.bmp";
+LPTSTR colon = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\colon.bmp";
 
-CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Dolphin.obj", 6);
-LPTSTR dolphinSkin = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\dolphinskin.bmp";
+CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj", 6);
+LPTSTR dolphinSkin = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\dolphinskin.bmp";
 
-DrawObject* arena = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Arena.obj");
-LPTSTR arenaTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\arenatexture.bmp";
+DrawObject* arena = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Arena.obj");
+LPTSTR arenaTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\arenatexture.bmp";
 
-DrawObject* water = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Water.obj");
-LPTSTR waterTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\watertexture.bmp";
+DrawObject* water = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Water.obj");
+LPTSTR waterTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\watertexture.bmp";
 
-DrawObject* sky = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sky.obj");
-LPTSTR skyTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\skytexture.bmp";
+DrawObject* sky = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sky.obj");
+LPTSTR skyTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\skytexture.bmp";
 
-DrawObject* sun = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Sun.obj");
-LPTSTR sunSmileTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sunsmile.bmp";
-LPTSTR sunGaspTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\sungasp.bmp";
+DrawObject* sun = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sun.obj");
+LPTSTR sunSmileTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sunsmile.bmp";
+LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sungasp.bmp";
 
-CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Swimmer.obj", 2);
-LPTSTR swimmerTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\swimmertexture.bmp";
+CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj", 2);
+LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\swimmertexture.bmp";
 
-DrawObject* trees = new DrawObject("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\models\\Trees.obj");
-LPTSTR treesTexture = L"C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\textures\\treestexture.bmp";
+DrawObject* trees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Trees.obj");
+LPTSTR treesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\treestexture.bmp";
 
 DrawObject* backTrees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\BackTrees.obj");
 LPTSTR backTreesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\backtreestexture.bmp";
@@ -148,8 +148,12 @@ GLuint swimmerTextID;
 GLuint treesTextID;
 GLuint backTreesTextID;
 
-bool specialKeys[1000] = {0};
-bool* keyStates = new bool[256];
+bool keyLeft;
+bool keyRight;
+bool keyUp;
+bool keyDown;
+bool keyEnter;
+bool keyEscape;
 
 float tranX;
 float tranY;
@@ -167,7 +171,6 @@ int timeLeft;
 
 ISoundEngine* engine;
 
-GLvoid HandleKeyboardInput();
 GLvoid InitGL(GLvoid);
 GLvoid DrawGLScene(GLvoid);
 GLvoid IdleGLScene(GLvoid);
@@ -182,15 +185,23 @@ void LaunchMenu();
 void GameOver();
 void NewSwimmerPosition();
 bool IsCollision();
+void PlayGame();
+void updateValues(double);
+void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, float bobbAngle, float bobbPeriod);
+
+GLFWwindow* window;
+
+#define NUM_TIMERS 3
+double timerValues[NUM_TIMERS];
+bool timerActive[NUM_TIMERS] = {false, false, false};
 
 #ifdef WIN32
-GLvoid PollJoyStick(GLvoid);
 bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
 #endif 
 
 void startBackgroundMusic(){
 	// play some sound stream, looped
-	engine->play2D("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\musicLoop.wav", true);
+	engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\musicLoop.wav", true);
 }
 
 void updateTimeTextures(){
@@ -241,40 +252,123 @@ void updateTimeTextures(){
 		numBox3TextID = number0TextID;
 }
 
-
-static void timer(int value)
+static void startTimer(double value, int timerNum)
 {
-	switch (value)
+	timerValues[timerNum] = value;
+	timerActive[timerNum] = true;
+}
+
+static void tickTimer(double timeDiff)
+{
+	for (int i = 0; i < NUM_TIMERS; i++)
 	{
-	//Game Timer
-	case 0:
+		if (timerActive[i])
+			timerValues[i] -= timeDiff;
+	}
+
+	if (timerValues[0] <= 0 && timerActive[0])
+	{
+		timerActive[0] = false;
 		if(timeLeft > 0)
 		{
 			timeLeft--;
 			updateTimeTextures();
-			glutPostRedisplay();
-			glutTimerFunc(1000, timer, 0);
+			startTimer(1, 0);
 		}
 		else
 		{
 			GameOver();
 		}
-		break;
-	case 1:
+	}
+	
+	if (timerValues[1] <= 0 && timerActive[1])
+	{
+		timerActive[1] = false;
 		sunTextID = sunSmileTextID;
-		break;
-	case 2:
+	}
+
+	if (timerValues[2] <= 0 && timerActive[2])
+	{
+		timerActive[2] = false;
 		LaunchMenu();
-		break;
+	}
+}
+
+static void error_callback(int error, const char* description)
+{
+    fputs(description, stderr);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
+		if(key == GLFW_KEY_ESCAPE)
+		{
+			if (InMainMenu)
+				glfwSetWindowShouldClose(window, GL_TRUE);
+			else
+				LaunchMenu();
+		}
+
+		if(key == GLFW_KEY_ENTER && InMainMenu)
+		{
+			PlayGame();
+		}
+
+		if (key == GLFW_KEY_LEFT)
+		{
+			keyLeft = true;
+			cout << "left" << endl;
+		}
+
+		if (key == GLFW_KEY_RIGHT)
+		{
+			keyRight = true;
+			cout << "right" << endl;
+		}
+
+		if (key == GLFW_KEY_UP)
+		{
+			keyUp = true;
+			cout << "up" << endl;
+		}
+
+		if (key == GLFW_KEY_DOWN)
+		{
+			keyDown = true;
+			cout << "down" << endl;
+		}
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		if (key == GLFW_KEY_LEFT)
+		{
+			keyLeft = false;
+			cout << "no left" << endl;
+		}
+
+		if (key == GLFW_KEY_RIGHT)
+		{
+			keyRight = false;
+			cout << "no right" << endl;
+		}
+
+		if (key == GLFW_KEY_UP)
+		{
+			keyUp = false;
+			cout << "no up" << endl;
+		}
+
+		if (key == GLFW_KEY_DOWN)
+		{
+			keyDown = false;
+			cout << "no down" << endl;
+		}
 	}
 }
 
 int main(int argc, char* argv[]){
-	for(int i = 0; i < 256; i++)
-	{
-		keyStates[i] = false;
-	}
-
 	// start the sound engine with default parameters
 	engine = createIrrKlangDevice();
 
@@ -284,27 +378,39 @@ int main(int argc, char* argv[]){
 		return 0; // error starting up the engine
 	}
 
-	startBackgroundMusic();
+    glfwSetErrorCallback(error_callback);
+    if (!glfwInit())
+        exit(EXIT_FAILURE);
 
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(windowWidth, windowHeight);
-	glutInitWindowPosition(100, 50);
-	glutCreateWindow(windowName);
-	glutFullScreen();
+	//window = glfwCreateWindow(windowWidth, windowHeight, "Happy Dolphin Attack", glfwGetPrimaryMonitor(), NULL);
+	window = glfwCreateWindow(windowWidth, windowHeight, "Happy Dolphin Attack", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, key_callback);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	InitGL();
-
-	glutDisplayFunc(DrawGLScene);
-	glutIdleFunc(IdleGLScene);
-	glutReshapeFunc(ReSizeGLScene);
-	glutKeyboardFunc(GLKeyDown);
-	glutKeyboardUpFunc(GLKeyUp);
-	glutSpecialFunc(SpecialKeys);
-	glutSpecialUpFunc(SpecialKeysUp);
-	glutSetCursor(GLUT_CURSOR_NONE);
 	LaunchMenu();
-	glutMainLoop();
+	startBackgroundMusic();
+	double lastTime = glfwGetTime();
+
+	while (!glfwWindowShouldClose(window))
+    {
+		double currentTime = glfwGetTime();
+		double timePassed = currentTime - lastTime;
+		lastTime = currentTime;
+		tickTimer(timePassed);
+		updateValues(timePassed);
+		DrawGLScene();
+    }
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
 
 	engine->drop();
 	return 0;
@@ -342,6 +448,10 @@ void PlayGame(){
 	dolphin->rotateFirst = 1;
 	dolphin->rotateSecond = 0;
 	dolphin->rotateThird = 2;
+	dolphin->bobbSize = .4;
+	dolphin->bobbMid = -19.3;
+	dolphin->bobbPeriod = 2.5;
+	dolphin->bobbAngle = 2.5;
 	arena->translation = Vector3f(0, -188, -6.9);
 	arena->scale = Vector3f(100, 100, 100);
 	water->translation = Vector3f(0, -188, -6.9);
@@ -354,7 +464,10 @@ void PlayGame(){
 	NewSwimmerPosition();
 	swimmer->scale = Vector3f(40, 40, 40);
 	swimmer->rotation.x = 0;
-	swimmer->bobbingVelocity = 0;
+	swimmer->bobbSize = .3;
+	swimmer->bobbMid = -13.4;
+	swimmer->bobbPeriod = 2.5;
+	swimmer->bobbAngle = 2.5;
 	trees->translation = Vector3f(0, -220 , -6.9);
 	trees->scale = Vector3f(120, 120, 120);
 	backTrees->translation = Vector3f(0, -220 , -6.9);
@@ -368,7 +481,7 @@ void PlayGame(){
 	numBox2TextID = number0TextID;
 	numBox3TextID = number0TextID;
 	timeLeft = 120;
-	timer(0);
+	startTimer(1, 0);
 }
 
 GLvoid InitGL(){
@@ -455,13 +568,87 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(backTreesTexture, backTreesTextID, true);
 }
 
-void moveDolphin(){
-	float zMove = dolphin->velocity * cos(dolphin->rotation.y * (M_PI / 180));
-	float xMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180);
+void moveDolphin(double timePassed){
+	if(InMainMenu || gameover || victory)
+		return;
+
+	int maxDistance = 770;
+	float backwardAcceleration = 6;
+	float forwardAcceleration = 8;
+	float angAcceleration = 5;
+	float maxVel = 250;
+	float minVel = -40;
+	float maxAngVel = 75;
+	float decceleration = .98;
+	float angDecceleration = .9;
+	float bankDecceleration = .93;
+	float maxBank = 25;
+	float bankSpeed = 70;
+	float slowestTurnScale = .17;
+	float maxBobVelocity = 45;
+
+	if((keyLeft && !keyDown) || (keyRight && keyDown))
+	{
+		if (dolphin->angVelocity < maxAngVel)
+			dolphin->angVelocity += angAcceleration;
+	}
+
+	if((keyRight && !keyDown) || (keyDown && keyLeft))
+	{
+		if (dolphin->angVelocity > maxAngVel * -1)
+			dolphin->angVelocity -= angAcceleration;
+	}
+
+	if (keyLeft)
+	{
+		if (dolphin->rotation.z > maxBank * -1)
+			dolphin->rotation.z -= bankSpeed * timePassed;
+	}
+	else if (keyRight)
+	{
+		if (dolphin->rotation.z < maxBank)
+			dolphin->rotation.z += bankSpeed * timePassed;
+	}
+	else
+	{
+		dolphin->angVelocity *= angDecceleration;
+		dolphin->rotation.z *= bankDecceleration;
+	}
+
+	if(keyUp)
+	{
+		if (dolphin->velocity <= maxVel)
+			dolphin->velocity += forwardAcceleration;
+	}
+	else if (dolphin->velocity > 0)
+	{
+		dolphin->velocity *= decceleration;
+	}
+
+	if(keyDown)
+	{
+		if (dolphin->velocity >= minVel)
+			dolphin->velocity -= backwardAcceleration;
+	}
+	else if (dolphin->velocity < 0)
+	{
+		dolphin->velocity *= decceleration;
+	}
+
+	float velocityScale = abs(dolphin->velocity / maxVel);
+	
+	float turnAmount = dolphin->angVelocity * timePassed * max(slowestTurnScale, velocityScale);
+	rotY += -turnAmount;
+	dolphin->rotation.y += turnAmount;
+
+	float zMove = dolphin->velocity * cos(dolphin->rotation.y * M_PI / 180) * timePassed;
+	float xMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180) * timePassed;
 	float dolphinDist = sqrtf(pow(dolphin->translation.z + zMove,2) + pow(dolphin->translation.x + xMove,2));
-	if (dolphinDist < 770) {
-		tranZ += dolphin->velocity * cos(rotY * (M_PI / 180));
-		tranX -= dolphin->velocity * sin(rotY * M_PI / 180);
+	
+	// keep in the arena
+	if (dolphinDist < maxDistance) {
+		tranZ += dolphin->velocity * cos(rotY * M_PI / 180) * timePassed;
+		tranX -= dolphin->velocity * sin(rotY * M_PI / 180) * timePassed;
 		dolphin->translation.z += zMove;
 		dolphin->translation.x += xMove;
 		sky->translation.z += zMove;
@@ -469,46 +656,76 @@ void moveDolphin(){
 		sun->translation.z += zMove;
 		sun->translation.x += xMove;
 	}
-	if(!specialKeys[GLUT_KEY_UP] && !specialKeys[GLUT_KEY_DOWN])
-		dolphin->velocity *= .95;
-	if(!specialKeys[GLUT_KEY_LEFT] && !specialKeys[GLUT_KEY_RIGHT])
-		dolphin->rotation.z *= .9;
-	dolphin->rotation.x = (dolphin->velocity * 0.5) + 3*(dolphin->translation.y+12) - 3*(dolphin->velocity-1)+23;
-	rotX = (dolphin->velocity)*.7 - 3;
-	if (dolphin->velocity < .2 && dolphin->velocity > -.2)
-		dolphin->velocity = 0;
-	if(!specialKeys[GLUT_KEY_UP]){
-		if (dolphin->bobbingVelocity >= 0 && dolphin->translation.y <= -17.5)
-			dolphin->translation.y += .01;
-		else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -17.5)
-			dolphin->translation.y -= .07;
-		else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -18)
-			dolphin->translation.y -= .01;
-		else
-			dolphin->bobbingVelocity *= -1;
-	}
-}
 
-void bobSwimmer()
-{
-	if (swimmer->translation.y > -12.75)
+	if (dolphin->velocity < maxBobVelocity)
 	{
-		swimmer->bobbingVelocity -= .0007;
-		swimmer->rotation.x += .05;
+		//bobbing
+		dolphin->bobbSize = .4;
+		dolphin->bobbMid = -19.3;
+		dolphin->bobbPeriod = 2.5;
+		dolphin->bobbAngle = 2.5;
 	}
 	else
 	{
-		swimmer->bobbingVelocity += .0007;
-		swimmer->rotation.x -= .05;
+		//jumping
+		dolphin->bobbSize = 5;
+		dolphin->bobbMid = -15;
+		dolphin->bobbPeriod = 1.75;
+		dolphin->bobbAngle = 20;
 	}
 
-	swimmer->translation.y += swimmer->bobbingVelocity;
+	bob(dolphin, timePassed, dolphin->bobbMid, dolphin->bobbSize, dolphin->bobbAngle, dolphin->bobbPeriod);
 }
 
-void updateValues()
+void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, float bobbAngle, float bobbPeriod)
 {
-	moveDolphin();
-	bobSwimmer();
+	float translationThreshold = .01;
+	float rotationThreshold = .001;
+	float blendFactor = .03;
+
+	if (bobbPeriod <= 0)
+		return;
+
+	object->bobbTime += timePassed;
+	
+	if (object->bobbTime > bobbPeriod)
+		object->bobbTime -= bobbPeriod;
+
+	float bobbProgress = object->bobbTime / bobbPeriod * 2 * M_PI;
+
+	float newY = bobbMid + bobbSize * sin(bobbProgress);
+	float newAngle = bobbAngle * cos(bobbProgress) * -1;
+
+	if (newY > object->translation.y + translationThreshold || newY < object->translation.y - translationThreshold)
+	{
+		// blend with current position
+		object->translation.y = object->translation.y + blendFactor * (newY - object->translation.y);
+	}
+	else
+	{
+		object->translation.y = newY;
+	}
+
+	if (newY > object->rotation.x + rotationThreshold || newY < object->rotation.x - rotationThreshold)
+	{
+		// blend with current angle
+		object->rotation.x = object->rotation.x + blendFactor * (newAngle - object->rotation.x);
+	}
+	else
+	{
+		object->rotation.x = newAngle;
+	}
+}
+
+void updateValues(double timePassed)
+{
+	if (Credits)
+	{
+		creditsScroll->translation.y += 1.5 * timePassed;
+	}
+
+	moveDolphin(timePassed);
+	bob(swimmer, timePassed, swimmer->bobbMid, swimmer->bobbSize, swimmer->bobbAngle, swimmer->bobbPeriod);
 }
 
 void draw(DrawObject * object, GLuint textID)
@@ -573,18 +790,39 @@ void draw(DrawObject * object, GLuint textID)
 	glEnd();
 }
 
-GLvoid DrawGLScene(){
+void perspectiveGL( GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar )
+{
+	const GLdouble pi = 3.1415926535897932384626433832795;
+	GLdouble fW, fH;
+
+	fH = tan( fovY / 360 * pi ) * zNear;
+	fW = fH * aspect;
+
+	glFrustum( -fW, fW, -fH, fH, zNear, zFar );
+}
+
+GLvoid DrawGLScene()
+{
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	perspectiveGL(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2500.0f);
+		
+	windowWidth = width;
+	windowHeight = height;
+	glMatrixMode(GL_MODELVIEW);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
 	if (IsCollision())
 	{
-		engine->play2D("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\dolphinlaugh.wav");
+		engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav");
 		IncrementScore();
 		NewSwimmerPosition();
 		sunTextID = sunGaspTextID;
-		glutTimerFunc(1000, timer, 1);
+		startTimer(1, 1);
 	}
 
 	if (InMainMenu)
@@ -607,8 +845,6 @@ GLvoid DrawGLScene(){
 		glRotatef(rotZ,0.0f,0.0f,1.0f);
 		glTranslatef(tranX,tranY,tranZ);
 
-		creditsScroll->translation.y += .003;
-
 		glPushMatrix();
 		draw(title, creditsTextID);
 		glPopMatrix();
@@ -616,12 +852,9 @@ GLvoid DrawGLScene(){
 		glPushMatrix();
 		draw(creditsScroll, creditsScrollTextID);
 		glPopMatrix();
-
 	}
 	else
 	{ // In Game
-
-		updateValues();
 		glViewport(0, 0, windowWidth, windowHeight);
 
 		glPushMatrix();
@@ -689,122 +922,8 @@ GLvoid DrawGLScene(){
 	}
 
 	glFlush();
-	glutSwapBuffers();
-}
-
-GLvoid IdleGLScene(){
-	PollJoyStick();
-	HandleKeyboardInput();
-	DrawGLScene();
-}
-
-GLvoid ReSizeGLScene(int width, int height){
-	if(height == 0)
-		height = 1;
-	glViewport(0,0,width,height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 2500.0f);
-	windowWidth = width;
-	windowHeight = height;
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-}
-
-GLvoid GLKeyDown(unsigned char key, int x, int y){
-	if(key == KEYBOARD_ESC)
-	{
-		if (InMainMenu)
-			exit(0);
-		else
-			LaunchMenu();
-	}
-
-	if(key == KEYBOARD_ENTER && InMainMenu)
-	{
-		PlayGame();
-	}
-
-	if (!InMainMenu)
-	{
-		keyStates[key] = true;
-	}
-}
-
-GLvoid GLKeyUp(unsigned char key, int x, int y)
-{
-	keyStates[key] = false;
-}
-
-GLvoid SpecialKeys(int key, int x, int y){
-	switch(key){
-		case GLUT_KEY_LEFT:
-			specialKeys[GLUT_KEY_LEFT] = 1;
-			break;
-		case GLUT_KEY_RIGHT:
-			specialKeys[GLUT_KEY_RIGHT] = 1;
-			break;
-		case GLUT_KEY_UP:
-			specialKeys[GLUT_KEY_UP] = 1;
-			break;
-		case GLUT_KEY_DOWN:
-			specialKeys[GLUT_KEY_DOWN] = 1;
-			break;
-		default:
-			break;
-	}
-}
-
-GLvoid SpecialKeysUp(int key, int x, int y){
-	switch(key){
-		case GLUT_KEY_LEFT:
-			specialKeys[GLUT_KEY_LEFT] = 0;
-			break;
-		case GLUT_KEY_UP:
-			specialKeys[GLUT_KEY_UP] = 0;
-			break;
-		case GLUT_KEY_RIGHT:
-			specialKeys[GLUT_KEY_RIGHT] = 0;
-			break;
-		case GLUT_KEY_DOWN:
-			specialKeys[GLUT_KEY_DOWN] = 0;
-			break;
-		default:
-			break;
-	}
-}
-
-GLvoid HandleKeyboardInput(){
-	if(!InMainMenu && !gameover && !victory){
-		if(specialKeys[GLUT_KEY_LEFT]){
-			float turnAmount = dolphin->velocity/2.8+.5;
-			rotY += -turnAmount;
-			dolphin->rotation.y += turnAmount;
-			if (dolphin->rotation.z >= -10)
-				dolphin->rotation.z -= 1;
-		}
-		if(specialKeys[GLUT_KEY_RIGHT]){
-			float turnAmount = dolphin->velocity/2.8+.5;
-			rotY += turnAmount;
-			dolphin->rotation.y += -turnAmount;
-			if (dolphin->rotation.z <= 10)
-				dolphin->rotation.z += 1;
-		}
-		if(specialKeys[GLUT_KEY_UP]){
-			if (dolphin->velocity <= 3)
-				dolphin->velocity += .3;
-			if (dolphin->bobbingVelocity >= 0 && dolphin->translation.y <= -15.5)
-				dolphin->translation.y += .1;
-			else if (dolphin->bobbingVelocity < 0 && dolphin->translation.y >= -18)
-				dolphin->translation.y -= .1;
-			else
-				dolphin->bobbingVelocity *= -1;
-		}
-		if(specialKeys[GLUT_KEY_DOWN]){
-			if (dolphin->velocity >= -.5)
-				dolphin->velocity -= .2;
-		}
-	}
+	glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 
 bool IsCollision()
@@ -818,23 +937,22 @@ void NewSwimmerPosition()
 	int angle = (rand() % 360) * (M_PI / 180);
 	int faceAngle = (rand() % 360) * (M_PI / 180);
 	int distance = rand() % maxDistance;
-	swimmer->translation = Vector3f(distance * cos(angle), -12.35, distance * sin(angle));
+	swimmer->translation = Vector3f(distance * cos(angle), -12.65, distance * sin(angle));
 	swimmer->rotation.y = faceAngle;
-	swimmer->bobbingVelocity = 0;
 }
 
 void Victory()
 {
 	victory = true;
 	ShowCredits();
-	glutTimerFunc(15000, timer, 2);
+	startTimer(15, 2);
 	swimmer->translation = Vector3f(0, -1000, 0);
 }
 
 void GameOver()
 {
 	gameover = true;
-	glutTimerFunc(3000, timer, 2);
+	startTimer(3, 2);
 	swimmer->translation = Vector3f(0, -1000, 0);
 }
 
@@ -906,14 +1024,6 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha)
 
 	DeleteObject(hBMP);													
 	return TRUE;														
-}
-
-GLvoid PollJoyStick(){
-	JOYINFOEX stuff;
-	ZeroMemory(&stuff, sizeof(stuff));
-	stuff.dwSize = sizeof(stuff);
-	stuff.dwFlags |= JOY_RETURNALL;
-	joyGetPosEx(JOYSTICKID1, &stuff);
 }
 
 #endif 
