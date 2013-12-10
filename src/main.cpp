@@ -10,6 +10,7 @@
 #include <cmath>
 #include <iostream>
 #include <irrKlang.h>
+#include <time.h>
 
 #using <System.Drawing.dll>
 #using <System.dll>
@@ -45,6 +46,11 @@ LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\tit
 DrawObject* creditsScroll = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\CreditsScroll.obj");
 LPTSTR creditsTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\creditsScreen.bmp";
 LPTSTR creditsScrollTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\creditsScroll.bmp";
+
+DrawObject* victory = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\failureOBJ.obj");
+LPTSTR victoryTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\victorytexture.bmp";
+DrawObject* gameover = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\failureOBJ.obj");
+LPTSTR gameoverTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\gameovertexture.bmp";
 
 DrawObject* headsBox = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\HeadsBox.obj");
 LPTSTR heads14 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads14.bmp";
@@ -98,6 +104,9 @@ LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\s
 CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj", 2);
 LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\swimmertexture.bmp";
 
+CollisionObject* monster = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\monster.obj",2);
+LPTSTR monsterTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\beachball.bmp";
+
 DrawObject* trees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Trees.obj");
 LPTSTR treesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\treestexture.bmp";
 
@@ -107,6 +116,8 @@ LPTSTR backTreesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\
 GLuint titleTextID;
 GLuint creditsTextID;
 GLuint creditsScrollTextID;
+GLuint victoryTextureID;
+GLuint gameoverTextureID;
 GLuint headsBoxTextID;
 GLuint heads14TextID;
 GLuint heads13TextID;
@@ -147,6 +158,7 @@ GLuint sunTextID;
 GLuint swimmerTextID;
 GLuint treesTextID;
 GLuint backTreesTextID;
+GLuint monsterTextID;
 
 bool keyLeft;
 bool keyRight;
@@ -161,11 +173,12 @@ float tranZ;
 float rotY;
 float rotX;
 float rotZ;
+float monsterDir;
 
 bool InMainMenu;
-bool Credits;
-bool victory;
-bool gameover;
+bool InCredits;
+bool InVictoryScene;
+bool InGameOverScene;
 int score;
 int timeLeft;
 
@@ -184,6 +197,8 @@ void IncrementScore();
 void LaunchMenu();
 void GameOver();
 void NewSwimmerPosition();
+void updateValues();
+void ShowCredits();
 bool IsCollision();
 void PlayGame();
 void updateValues(double);
@@ -191,9 +206,10 @@ void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, f
 
 GLFWwindow* window;
 
-#define NUM_TIMERS 3
+#define NUM_TIMERS 4
 double timerValues[NUM_TIMERS];
 bool timerActive[NUM_TIMERS] = {false, false, false};
+bool hitMonster();
 
 #ifdef WIN32
 bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
@@ -269,15 +285,19 @@ static void tickTimer(double timeDiff)
 	if (timerValues[0] <= 0 && timerActive[0])
 	{
 		timerActive[0] = false;
-		if(timeLeft > 0)
+		if (!InMainMenu && !InVictoryScene && !InGameOverScene && !InCredits)
 		{
 			timeLeft--;
 			updateTimeTextures();
-			startTimer(1, 0);
-		}
-		else
-		{
-			GameOver();
+			
+			if(timeLeft > 0)
+			{
+				startTimer(1, 0);
+			}
+			else
+			{
+				GameOver();
+			}
 		}
 	}
 	
@@ -290,7 +310,15 @@ static void tickTimer(double timeDiff)
 	if (timerValues[2] <= 0 && timerActive[2])
 	{
 		timerActive[2] = false;
-		LaunchMenu();
+		if (InCredits || InGameOverScene || InVictoryScene)
+			LaunchMenu();
+	}
+
+	if (timerValues[3] <= 0 && timerActive[3])
+	{
+		timerActive[3] = false;
+		ShowCredits();
+		startTimer(14, 2);
 	}
 }
 
@@ -318,6 +346,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 		if (key == GLFW_KEY_LEFT)
 		{
+			cout<<"left Down"<<endl;
 			keyLeft = true;
 		}
 
@@ -374,8 +403,10 @@ int main(int argc, char* argv[]){
     if (!glfwInit())
         exit(EXIT_FAILURE);
 
+	//fullscreen:
 	//window = glfwCreateWindow(windowWidth, windowHeight, "Happy Dolphin Attack", glfwGetPrimaryMonitor(), NULL);
 	window = glfwCreateWindow(windowWidth, windowHeight, "Happy Dolphin Attack", NULL, NULL);
+	glfwSetWindowPos(window, 50, 50);
     if (!window)
     {
         glfwTerminate();
@@ -384,6 +415,8 @@ int main(int argc, char* argv[]){
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+	srand (time(NULL));
 
 	InitGL();
 	LaunchMenu();
@@ -413,8 +446,9 @@ void CleanUp(){
 
 void LaunchMenu(){
 	InMainMenu = true;
-	victory = false;
-	gameover = false;
+	InVictoryScene = false;
+	InGameOverScene = false;
+	InCredits = false;
 	tranX = 0.0;
 	tranY = 0.0;
 	tranZ = 0.0;
@@ -424,7 +458,7 @@ void LaunchMenu(){
 }
 
 void ShowCredits(){
-	Credits = true;
+	InCredits = true;
 	tranX = 0.0;
 	tranY = 0.0;
 	tranZ = 0.0;
@@ -435,15 +469,11 @@ void ShowCredits(){
 }
 
 void PlayGame(){
-	dolphin->translation = Vector3f(0, -19, -40);
+	dolphin->translation = Vector3f(0, -16, -40);
 	dolphin->rotation = Vector3f(0, 180, 0);
 	dolphin->rotateFirst = 1;
 	dolphin->rotateSecond = 0;
 	dolphin->rotateThird = 2;
-	dolphin->bobbSize = .4;
-	dolphin->bobbMid = -19.3;
-	dolphin->bobbPeriod = 2.5;
-	dolphin->bobbAngle = 2.5;
 	arena->translation = Vector3f(0, -188, -6.9);
 	arena->scale = Vector3f(100, 100, 100);
 	water->translation = Vector3f(0, -188, -6.9);
@@ -457,7 +487,7 @@ void PlayGame(){
 	swimmer->scale = Vector3f(40, 40, 40);
 	swimmer->rotation.x = 0;
 	swimmer->bobbSize = .3;
-	swimmer->bobbMid = -13.4;
+	swimmer->bobbMid = -11.6;
 	swimmer->bobbPeriod = 2.5;
 	swimmer->bobbAngle = 2.5;
 	trees->translation = Vector3f(0, -220 , -6.9);
@@ -465,8 +495,10 @@ void PlayGame(){
 	backTrees->translation = Vector3f(0, -220 , -6.9);
 	backTrees->scale = Vector3f(120, 120, 120);
 
+	monster->translation = Vector3f(0,4.5,880);
+	monster->rotation = Vector3f(0,180,0);
+
 	InMainMenu = false;
-	Credits = false;
 	score = 0;
 	headsBoxTextID = heads14TextID;
 	numBox1TextID = number2TextID;
@@ -493,7 +525,9 @@ GLvoid InitGL(){
 
 	NeHeLoadBitmap(titleTexture, titleTextID, false);
 	NeHeLoadBitmap(creditsTexture, creditsTextID, false);
-	NeHeLoadBitmap(creditsScrollTexture, creditsScrollTextID, true);
+	NeHeLoadBitmap(creditsScrollTexture, creditsScrollTextID, false);
+	NeHeLoadBitmap(victoryTexture,victoryTextureID,true);
+	NeHeLoadBitmap(gameoverTexture,gameoverTextureID,true);
 
 	title->translation = Vector3f(-.05, 3.89, -16.9);
 	title->scale = Vector3f(1.6, 1.55, 1.5);
@@ -502,6 +536,14 @@ GLvoid InitGL(){
 	creditsScroll->translation = Vector3f(-.05, 3.89, -14);
 	creditsScroll->scale = Vector3f(.6, .6, .6);
 	creditsScroll->rotation = Vector3f(90, 180, 0);
+
+	victory->translation = Vector3f(-10, .1, -14);
+	victory->scale = Vector3f(.6, .6, .6);
+	victory->rotation = Vector3f(90, 270, 0);
+
+	gameover->translation = Vector3f(-10, .1, -14);
+	gameover->scale = Vector3f(.6, .6, .6);
+	gameover->rotation = Vector3f(90, 270, 0);
 
 	NeHeLoadBitmap(heads14, heads14TextID, true);
 	NeHeLoadBitmap(heads13, heads13TextID, true);
@@ -558,12 +600,12 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(swimmerTexture, swimmerTextID, false);
 	NeHeLoadBitmap(treesTexture, treesTextID, true);
 	NeHeLoadBitmap(backTreesTexture, backTreesTextID, true);
+	NeHeLoadBitmap(monsterTexture,monsterTextID,false);
 }
 
 void moveDolphin(double timePassed){
-	if(InMainMenu || gameover || victory)
+	if(InMainMenu || InCredits)
 		return;
-
 	int maxDistance = 770;
 	float backwardAcceleration = 6;
 	float forwardAcceleration = 8;
@@ -577,7 +619,15 @@ void moveDolphin(double timePassed){
 	float maxBank = 25;
 	float bankSpeed = 70;
 	float slowestTurnScale = .17;
-	float maxBobVelocity = 45;
+	float maxBobVelocity = 200;
+
+	if (InGameOverScene || InVictoryScene)
+	{
+		keyLeft = false;
+		keyRight = false;
+		keyUp = false;
+		keyDown = false;
+	}
 
 	if((keyLeft && !keyDown) || (keyRight && keyDown))
 	{
@@ -649,21 +699,19 @@ void moveDolphin(double timePassed){
 		sun->translation.x += xMove;
 	}
 
-	if (dolphin->velocity < maxBobVelocity)
+	//bobbing
+	dolphin->bobbSize = .4;
+	dolphin->bobbMid = -16.3;
+	dolphin->bobbPeriod = 2.5;
+	dolphin->bobbAngle = 2.5;
+
+	if (dolphin->velocity >= 0)
 	{
-		//bobbing
-		dolphin->bobbSize = .4;
-		dolphin->bobbMid = -19.3;
-		dolphin->bobbPeriod = 2.5;
-		dolphin->bobbAngle = 2.5;
-	}
-	else
-	{
-		//jumping
-		dolphin->bobbSize = 6.5;
-		dolphin->bobbMid = -15.5;
-		dolphin->bobbPeriod = 1.5;
-		dolphin->bobbAngle = 20;
+		//jumping (don't jump backwards)
+		dolphin->bobbSize += 5 * velocityScale;
+		dolphin->bobbMid += 2 * velocityScale;
+		dolphin->bobbPeriod += -1.25 * velocityScale;
+		dolphin->bobbAngle += 13 * velocityScale;
 	}
 
 	bob(dolphin, timePassed, dolphin->bobbMid, dolphin->bobbSize, dolphin->bobbAngle, dolphin->bobbPeriod);
@@ -671,7 +719,8 @@ void moveDolphin(double timePassed){
 
 void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, float bobbAngle, float bobbPeriod)
 {
-	float blendFactor = .03;
+	//blend factor of 1 uses only new position, 0 only old position
+	float blendFactor = .2;
 
 	if (bobbPeriod <= 0)
 		return;
@@ -695,7 +744,7 @@ void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, f
 
 void updateValues(double timePassed)
 {
-	if (Credits)
+	if (InCredits)
 	{
 		creditsScroll->translation.y += 1.5 * timePassed;
 	}
@@ -792,14 +841,21 @@ GLvoid DrawGLScene()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	if (IsCollision())
+	if (IsCollision() && !InGameOverScene)
 	{
 		engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav");
 		IncrementScore();
-		NewSwimmerPosition();
 		sunTextID = sunGaspTextID;
 		startTimer(1, 1);
 	}
+
+	/*if (hitMonster())
+	{
+		monster->velocity = dolphin->velocity;
+		monsterDir = dolphin->rotation.y;
+		monster->translation.z += monster->velocity * cos(monsterDir * (M_PI / 180)) * 2;
+		monster->translation.x += monster->velocity * sin(monsterDir * M_PI / 180) * 2;
+	}*/
 
 	if (InMainMenu)
 	{
@@ -813,7 +869,7 @@ GLvoid DrawGLScene()
 		draw(title, titleTextID);
 		glPopMatrix();
 
-	} else if (Credits)
+	} else if (InCredits)
 	{
 		glViewport(0, 0, windowWidth, windowHeight);
 		glRotatef(rotX-10,1.0f,0.0f,0.0f);
@@ -863,6 +919,10 @@ GLvoid DrawGLScene()
 			glPopMatrix();
 
 			glPushMatrix();
+			draw(monster,monsterTextID);
+			glPopMatrix();
+
+			glPushMatrix();
 			draw(dolphin, dolphinTextID);
 			glPopMatrix();
 
@@ -895,6 +955,20 @@ GLvoid DrawGLScene()
 		glPushMatrix();
 		draw(numBox3, numBox3TextID);
 		glPopMatrix();
+
+		if(InGameOverScene)
+		{
+			glPushMatrix();
+			draw(gameover, gameoverTextureID);
+			glPopMatrix();
+		}
+		else if(InVictoryScene)
+		{
+			glPushMatrix();
+			draw(victory, victoryTextureID);
+			glPopMatrix();
+		}
+
 	}
 
 	glFlush();
@@ -907,11 +981,20 @@ bool IsCollision()
 	return dolphin->CollidesWith(swimmer);
 }
 
+bool hitMonster()
+{
+	if(monsterDir != dolphin->rotation.y && monster->velocity > 0)
+	{
+		return false;
+	}
+	return dolphin->CollidesWith(monster);
+}
+
 void NewSwimmerPosition()
 {
 	int maxDistance = 690;
-	int angle = (rand() % 360) * (M_PI / 180);
-	int faceAngle = (rand() % 360) * (M_PI / 180);
+	float angle = (rand() % 360) * (M_PI / 180);
+	float faceAngle = (rand() % 360) * (M_PI / 180);
 	int distance = rand() % maxDistance;
 	swimmer->translation = Vector3f(distance * cos(angle), -12.65, distance * sin(angle));
 	swimmer->rotation.y = faceAngle;
@@ -919,17 +1002,14 @@ void NewSwimmerPosition()
 
 void Victory()
 {
-	victory = true;
-	ShowCredits();
-	startTimer(15, 2);
-	swimmer->translation = Vector3f(0, -1000, 0);
+	InVictoryScene = true;
+	startTimer(5, 3);
 }
 
 void GameOver()
 {
-	gameover = true;
-	startTimer(3, 2);
-	swimmer->translation = Vector3f(0, -1000, 0);
+	InGameOverScene = true;
+	startTimer(5, 2);
 }
 
 void updateSwimmerHeads(){
@@ -970,7 +1050,12 @@ void IncrementScore()
 	score++;
 	updateSwimmerHeads();
 	if (score >= 14)
+	{
+		swimmer->translation.x = 9999;
 		Victory();
+	}
+	else
+		NewSwimmerPosition();
 }
 
 #ifdef WIN32
