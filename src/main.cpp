@@ -184,6 +184,8 @@ int score;
 int timeLeft;
 
 ISoundEngine* engine;
+#define NUM_SPLASH_SOUNDS 4
+ISoundSource* splashes[NUM_SPLASH_SOUNDS];
 
 GLvoid InitGL(GLvoid);
 GLvoid DrawGLScene(GLvoid);
@@ -219,6 +221,12 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
 void startBackgroundMusic(){
 	// play some sound stream, looped
 	engine->play2D("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\musicLoop.wav", true);
+}
+
+void playSplashSound()
+{
+	ISoundSource* splash = splashes[rand() % NUM_SPLASH_SOUNDS];
+	engine->play2D(splash);
 }
 
 void updateTimeTextures(){
@@ -347,7 +355,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 		if (key == GLFW_KEY_LEFT)
 		{
-			cout<<"left Down"<<endl;
 			keyLeft = true;
 		}
 
@@ -400,6 +407,11 @@ int main(int argc, char* argv[]){
 		return 0; // error starting up the engine
 	}
 
+	splashes[0] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash1.wav", ESM_AUTO_DETECT, true);
+	splashes[1] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash2.wav", ESM_AUTO_DETECT, true);
+	splashes[2] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash3.wav", ESM_AUTO_DETECT, true);
+	splashes[3] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash4.wav", ESM_AUTO_DETECT, true);
+
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -410,6 +422,7 @@ int main(int argc, char* argv[]){
 	window = glfwCreateWindow(windowWidth, windowHeight, "Happy Dolphin Attack", glfwGetPrimaryMonitor(), NULL);
 	//window = glfwCreateWindow(windowWidth, windowHeight, "Happy Dolphin Attack", NULL, NULL);
 	glfwSetWindowPos(window, 50, 50);
+
     if (!window)
     {
         glfwTerminate();
@@ -612,7 +625,7 @@ void moveDolphin(double timePassed){
 	int maxDistance = 770;
 	float backwardAcceleration = 6;
 	float forwardAcceleration = 8;
-	float angAcceleration = 5;
+	float angAcceleration = 3;
 	float maxVel = 250;
 	float minVel = -40;
 	float maxAngVel = 75;
@@ -621,7 +634,7 @@ void moveDolphin(double timePassed){
 	float bankDecceleration = .93;
 	float maxBank = 25;
 	float bankSpeed = 70;
-	float slowestTurnScale = .17;
+	float slowestTurnScale = .25;
 	float maxBobVelocity = 200;
 
 	if (InGameOverScene || InVictoryScene)
@@ -717,13 +730,19 @@ void moveDolphin(double timePassed){
 		dolphin->bobbAngle += 13 * velocityScale;
 	}
 
+	float splashPoint = .58 * dolphin->bobbPeriod;
+	float timeBefore = dolphin->bobbTime;
+
 	bob(dolphin, timePassed, dolphin->bobbMid, dolphin->bobbSize, dolphin->bobbAngle, dolphin->bobbPeriod);
+
+	if (timeBefore < splashPoint && dolphin->bobbTime > splashPoint && velocityScale > .75)
+		playSplashSound();
 }
 
 void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, float bobbAngle, float bobbPeriod)
 {
 	//blend factor of 1 uses only new position, 0 only old position
-	float blendFactor = .2;
+	float blendFactor = .07;
 
 	if (bobbPeriod <= 0)
 		return;
