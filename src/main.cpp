@@ -4,25 +4,23 @@
 #endif 
 
 #define _USE_MATH_DEFINES
+#define GLFW_DLL
 #include "DrawObject.h"
 #include "CollisionObject.h"
 #include <string>
 #include <cmath>
 #include <iostream>
 #include <irrKlang.h>
+#include <GLFW/glfw3.h>
 #include <time.h>
 
 #using <System.Drawing.dll>
 #using <System.dll>
 #using <System.Windows.Forms.dll>
 
-#define GLFW_DLL
-
 using namespace std;
 using namespace System;
 using namespace irrklang;
-
-#include <GLFW/glfw3.h>
 
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // no console
@@ -219,13 +217,13 @@ bool IsCollision();
 void PlayGame();
 void updateValues(double);
 void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, float bobbAngle, float bobbPeriod);
+bool hitMonster();
 
 GLFWwindow* window;
 
 #define NUM_TIMERS 6
 double timerValues[NUM_TIMERS];
 bool timerActive[NUM_TIMERS] = {false, false, false};
-bool hitMonster();
 
 #ifdef WIN32
 bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
