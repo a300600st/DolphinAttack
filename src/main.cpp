@@ -117,6 +117,12 @@ LPTSTR treesTexture = L"textures\\treestexture.bmp";
 DrawObject* backTrees = new DrawObject("models\\BackTrees.obj");
 LPTSTR backTreesTexture = L"textures\\backtreestexture.bmp";
 
+DrawObject* seagull = new DrawObject("models\\Seagull.obj");
+LPTSTR seagullTexture = L"textures\\seagulltexture.bmp";
+
+DrawObject* seagullRWing = new DrawObject("models\\Wing.obj");
+DrawObject* seagullLWing = new DrawObject("models\\Wing.obj");
+
 GLuint titleTextID;
 GLuint creditsTextID;
 GLuint creditsScrollTextID;
@@ -163,6 +169,7 @@ GLuint swimmerTextID;
 GLuint treesTextID;
 GLuint backTreesTextID;
 GLuint monsterTextID;
+GLuint seagullTextID;
 
 bool keyLeft;
 bool keyRight;
@@ -190,6 +197,9 @@ ISoundEngine* engine;
 #define NUM_SPLASH_SOUNDS 4
 ISoundSource* splashes[NUM_SPLASH_SOUNDS];
 
+bool seagullFlapping;
+float seagullAngle;
+
 GLvoid InitGL(GLvoid);
 GLvoid DrawGLScene(GLvoid);
 GLvoid IdleGLScene(GLvoid);
@@ -212,7 +222,7 @@ void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, f
 
 GLFWwindow* window;
 
-#define NUM_TIMERS 4
+#define NUM_TIMERS 6
 double timerValues[NUM_TIMERS];
 bool timerActive[NUM_TIMERS] = {false, false, false};
 bool hitMonster();
@@ -331,6 +341,20 @@ static void tickTimer(double timeDiff)
 		timerActive[3] = false;
 		ShowCredits();
 		startTimer(14, 2);
+	}
+
+	if (timerValues[4] <= 0 && timerActive[4])
+	{
+		timerActive[4] = false;
+		seagullFlapping = false;
+		startTimer(3, 5);
+	}
+
+	if (timerValues[5] <= 0 && timerActive[5])
+	{
+		timerActive[5] = false;
+		seagullFlapping = true;
+		startTimer(3.5, 4);
 	}
 }
 
@@ -509,7 +533,14 @@ void PlayGame(){
 	swimmer->bobbMid = -11.6;
 	swimmer->bobbPeriod = 2.5;
 	swimmer->bobbAngle = 2.5;
+	seagullAngle = 0;
+	seagull->rotation.y = 0;
+	seagull->scale = Vector3f(40, 40, 40);
+	seagull->bobbPeriod = .7;
+	seagullLWing->scale = Vector3f(-1, 1, 1);
+	seagull->rotation.z = 20;
 	trees->translation = Vector3f(0, -220 , -6.9);
+	seagullFlapping = true;
 	trees->scale = Vector3f(120, 120, 120);
 	backTrees->translation = Vector3f(0, -220 , -6.9);
 	backTrees->scale = Vector3f(120, 120, 120);
@@ -525,6 +556,7 @@ void PlayGame(){
 	numBox3TextID = number0TextID;
 	timeLeft = 120;
 	startTimer(1, 0);
+	startTimer(3.5, 4);
 }
 
 GLvoid InitGL(){
@@ -620,6 +652,7 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(treesTexture, treesTextID, true);
 	NeHeLoadBitmap(backTreesTexture, backTreesTextID, true);
 	NeHeLoadBitmap(monsterTexture,monsterTextID,false);
+	NeHeLoadBitmap(seagullTexture,seagullTextID,false);
 }
 
 void moveDolphin(double timePassed){
@@ -767,6 +800,33 @@ void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, f
 	object->rotation.x = object->rotation.x + blendFactor * (newAngle - object->rotation.x);
 }
 
+void flySeagull(double timePassed)
+{
+	if (seagullFlapping)
+	{
+		seagull->bobbTime += timePassed;
+
+		if (seagull->bobbTime > seagull->bobbPeriod)
+			seagull->bobbTime -= seagull->bobbPeriod;
+
+		float newZAngle = 18 * sin(seagull->bobbTime / seagull->bobbPeriod * 2 * M_PI);
+		seagullRWing->rotation.z = newZAngle;
+		seagullLWing->rotation.z = newZAngle;
+
+		float newYAngle = -1 * 6 - 9 * sin(seagull->bobbTime / seagull->bobbPeriod * 2 * M_PI);
+		seagullRWing->rotation.y = newYAngle;
+		seagullLWing->rotation.y = newYAngle;
+
+		seagull->translation.y = .5 * sin(seagull->bobbTime / seagull->bobbPeriod * 2 * M_PI);
+	}
+
+	int radius = 250;
+	float fullCircleTime = 20;
+	seagullAngle += timePassed/fullCircleTime * 2 * M_PI;
+	seagull->translation = Vector3f(radius * cos(seagullAngle), 15, radius * sin(seagullAngle));
+	seagull->rotation.y -= timePassed/fullCircleTime * 360;
+}
+
 void updateValues(double timePassed)
 {
 	if (InCredits)
@@ -776,6 +836,7 @@ void updateValues(double timePassed)
 
 	moveDolphin(timePassed);
 	bob(swimmer, timePassed, swimmer->bobbMid, swimmer->bobbSize, swimmer->bobbAngle, swimmer->bobbPeriod);
+	flySeagull(timePassed);
 }
 
 void draw(DrawObject * object, GLuint textID)
@@ -940,6 +1001,18 @@ GLvoid DrawGLScene()
 			glPopMatrix();
 
 			glPushMatrix();
+				draw(seagull, seagullTextID);
+
+				glPushMatrix();
+					draw(seagullRWing, seagullTextID);
+				glPopMatrix();
+
+				glPushMatrix();
+					draw(seagullLWing, seagullTextID);
+				glPopMatrix();
+			glPopMatrix();
+
+			glPushMatrix();
 			draw(swimmer, swimmerTextID);
 			glPopMatrix();
 
@@ -1017,11 +1090,24 @@ bool hitMonster()
 
 void NewSwimmerPosition()
 {
+	float newSpawnSeparation = 300;
 	int maxDistance = 690;
-	float angle = (rand() % 360) * (M_PI / 180);
-	float faceAngle = (rand() % 360) * (M_PI / 180);
-	int distance = rand() % maxDistance;
-	swimmer->translation = Vector3f(distance * cos(angle), -12.65, distance * sin(angle));
+	float distFromOldPosition;
+	float faceAngle;
+	float newX;
+	float newZ;
+
+	do {
+		float angle = (rand() % 360) * (M_PI / 180);
+		faceAngle = (rand() % 360) * (M_PI / 180);
+		int distance = rand() % maxDistance;
+		newX = distance * cos(angle);
+		newZ = distance * sin(angle);
+		distFromOldPosition = sqrt(pow(swimmer->translation.x - newX, 2) + pow(swimmer->translation.z - newZ, 2));
+	}
+	while (distFromOldPosition < newSpawnSeparation);
+
+	swimmer->translation = Vector3f(newX, -12.65, newZ);
 	swimmer->rotation.y = faceAngle;
 }
 
