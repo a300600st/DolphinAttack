@@ -511,7 +511,7 @@ void PlayGame(){
 	backTrees->translation = Vector3f(0, -220 , -6.9);
 	backTrees->scale = Vector3f(120, 120, 120);
 
-	monster->translation = Vector3f(0,4.5,8880);
+	monster->translation = Vector3f(0,4.5,880);
 	monster->rotation = Vector3f(0,180,0);
 
 	InMainMenu = false;
@@ -940,9 +940,9 @@ GLvoid DrawGLScene()
 			draw(swimmer, swimmerTextID);
 			glPopMatrix();
 
-			glPushMatrix();
-			draw(monster,monsterTextID);
-			glPopMatrix();
+			//glPushMatrix();
+			//draw(monster,monsterTextID);
+			//glPopMatrix();
 
 			glPushMatrix();
 			draw(dolphin, dolphinTextID);
