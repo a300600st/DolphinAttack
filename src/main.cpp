@@ -37,6 +37,9 @@ int windowHeight = DEFAULT_WINDOW_HEIGHT;
 char* windowName = "My Glut Window";
 int texID = 0;
 
+/*
+	CHECK YOUR EMAIL BEFORE USING THESE! I FIXED RELATIVE PATHS
+*/
 // C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack
 // C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
 // C:\\Users\\Ryan\\Documents\\DolphinAttack
