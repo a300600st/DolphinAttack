@@ -407,10 +407,10 @@ int main(int argc, char* argv[]){
 		return 0; // error starting up the engine
 	}
 
-	splashes[0] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash1.wav", ESM_AUTO_DETECT, true);
-	splashes[1] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash2.wav", ESM_AUTO_DETECT, true);
-	splashes[2] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash3.wav", ESM_AUTO_DETECT, true);
-	splashes[3] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash4.wav", ESM_AUTO_DETECT, true);
+	splashes[0] = engine->addSoundSourceFromFile("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\splash1.wav", ESM_AUTO_DETECT, true);
+	splashes[1] = engine->addSoundSourceFromFile("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\splash2.wav", ESM_AUTO_DETECT, true);
+	splashes[2] = engine->addSoundSourceFromFile("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\splash3.wav", ESM_AUTO_DETECT, true);
+	splashes[3] = engine->addSoundSourceFromFile("C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack\\audio\\splash4.wav", ESM_AUTO_DETECT, true);
 
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
@@ -511,7 +511,7 @@ void PlayGame(){
 	backTrees->translation = Vector3f(0, -220 , -6.9);
 	backTrees->scale = Vector3f(120, 120, 120);
 
-	monster->translation = Vector3f(0,4.5,880);
+	monster->translation = Vector3f(0,4.5,8880);
 	monster->rotation = Vector3f(0,180,0);
 
 	InMainMenu = false;
