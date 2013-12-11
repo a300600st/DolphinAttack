@@ -1,3 +1,10 @@
+*.exe
+*.pdb
+*.zip
+*.ilk
+*.metagen
+*.dll
+
 # Compiled Object files
 *.slo
 *.lo
