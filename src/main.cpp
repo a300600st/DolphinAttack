@@ -41,77 +41,77 @@ int texID = 0;
 // C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
 // C:\\Users\\Ryan\\Documents\\DolphinAttack
 
-DrawObject* title = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Title.obj");
-LPTSTR titleTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\titletexture.bmp";
-DrawObject* creditsScroll = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\CreditsScroll.obj");
-LPTSTR creditsTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\creditsScreen.bmp";
-LPTSTR creditsScrollTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\creditsScroll.bmp";
+DrawObject* title = new DrawObject(".\\models\\Title.obj");
+LPTSTR titleTexture = L".\\textures\\titletexture.bmp";
+DrawObject* creditsScroll = new DrawObject(".\\models\\CreditsScroll.obj");
+LPTSTR creditsTexture = L".\\textures\\creditsScreen.bmp";
+LPTSTR creditsScrollTexture = L".\\textures\\creditsScroll.bmp";
 
-DrawObject* victory = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\failureOBJ.obj");
-LPTSTR victoryTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\victorytexture.bmp";
-DrawObject* gameover = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\failureOBJ.obj");
-LPTSTR gameoverTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\gameovertexture.bmp";
+DrawObject* victory = new DrawObject(".\\models\\failureOBJ.obj");
+LPTSTR victoryTexture = L".\\textures\\victorytexture.bmp";
+DrawObject* gameover = new DrawObject(".\\models\\failureOBJ.obj");
+LPTSTR gameoverTexture = L".\\textures\\gameovertexture.bmp";
 
-DrawObject* headsBox = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\HeadsBox.obj");
-LPTSTR heads14 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads14.bmp";
-LPTSTR heads13 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads13.bmp";
-LPTSTR heads12 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads12.bmp";
-LPTSTR heads11 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads11.bmp";
-LPTSTR heads10 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads10.bmp";
-LPTSTR heads9 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads9.bmp";
-LPTSTR heads8 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads8.bmp";
-LPTSTR heads7 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads7.bmp";
-LPTSTR heads6 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads6.bmp";
-LPTSTR heads5 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads5.bmp";
-LPTSTR heads4 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads4.bmp";
-LPTSTR heads3 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads3.bmp";
-LPTSTR heads2 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads2.bmp";
-LPTSTR heads1 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads1.bmp";
-LPTSTR heads0 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\heads0.bmp";
+DrawObject* headsBox = new DrawObject(".\\models\\HeadsBox.obj");
+LPTSTR heads14 = L".\\textures\\heads14.bmp";
+LPTSTR heads13 = L".\\textures\\heads13.bmp";
+LPTSTR heads12 = L".\\textures\\heads12.bmp";
+LPTSTR heads11 = L".\\textures\\heads11.bmp";
+LPTSTR heads10 = L".\\textures\\heads10.bmp";
+LPTSTR heads9 = L".\\textures\\heads9.bmp";
+LPTSTR heads8 = L".\\textures\\heads8.bmp";
+LPTSTR heads7 = L".\\textures\\heads7.bmp";
+LPTSTR heads6 = L".\\textures\\heads6.bmp";
+LPTSTR heads5 = L".\\textures\\heads5.bmp";
+LPTSTR heads4 = L".\\textures\\heads4.bmp";
+LPTSTR heads3 = L".\\textures\\heads3.bmp";
+LPTSTR heads2 = L".\\textures\\heads2.bmp";
+LPTSTR heads1 = L".\\textures\\heads1.bmp";
+LPTSTR heads0 = L".\\textures\\heads0.bmp";
 
-DrawObject* numBox1 = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\NumberBox.obj");
-DrawObject* colonBox = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\NumberBox.obj");
-DrawObject* numBox2 = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\NumberBox.obj");
-DrawObject* numBox3 = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\NumberBox.obj");
-LPTSTR number0 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number0.bmp";
-LPTSTR number1 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number1.bmp";
-LPTSTR number2 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number2.bmp";
-LPTSTR number3 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number3.bmp";
-LPTSTR number4 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number4.bmp";
-LPTSTR number5 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number5.bmp";
-LPTSTR number6 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number6.bmp";
-LPTSTR number7 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number7.bmp";
-LPTSTR number8 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number8.bmp";
-LPTSTR number9 = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\number9.bmp";
-LPTSTR colon = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\colon.bmp";
+DrawObject* numBox1 = new DrawObject(".\\models\\NumberBox.obj");
+DrawObject* colonBox = new DrawObject(".\\models\\NumberBox.obj");
+DrawObject* numBox2 = new DrawObject(".\\models\\NumberBox.obj");
+DrawObject* numBox3 = new DrawObject(".\\models\\NumberBox.obj");
+LPTSTR number0 = L".\\textures\\number0.bmp";
+LPTSTR number1 = L".\\textures\\number1.bmp";
+LPTSTR number2 = L".\\textures\\number2.bmp";
+LPTSTR number3 = L".\\textures\\number3.bmp";
+LPTSTR number4 = L".\\textures\\number4.bmp";
+LPTSTR number5 = L".\\textures\\number5.bmp";
+LPTSTR number6 = L".\\textures\\number6.bmp";
+LPTSTR number7 = L".\\textures\\number7.bmp";
+LPTSTR number8 = L".\\textures\\number8.bmp";
+LPTSTR number9 = L".\\textures\\number9.bmp";
+LPTSTR colon = L".\\textures\\colon.bmp";
 
-CollisionObject* dolphin = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Dolphin.obj", 6);
-LPTSTR dolphinSkin = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\dolphinskin.bmp";
+CollisionObject* dolphin = new CollisionObject(".\\models\\Dolphin.obj", 6);
+LPTSTR dolphinSkin = L".\\textures\\dolphinskin.bmp";
 
-DrawObject* arena = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Arena.obj");
-LPTSTR arenaTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\arenatexture.bmp";
+DrawObject* arena = new DrawObject(".\\models\\Arena.obj");
+LPTSTR arenaTexture = L".\\textures\\arenatexture.bmp";
 
-DrawObject* water = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Water.obj");
-LPTSTR waterTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\watertexture.bmp";
+DrawObject* water = new DrawObject(".\\models\\Water.obj");
+LPTSTR waterTexture = L".\\textures\\watertexture.bmp";
 
-DrawObject* sky = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sky.obj");
-LPTSTR skyTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\skytexture.bmp";
+DrawObject* sky = new DrawObject(".\\models\\Sky.obj");
+LPTSTR skyTexture = L".\\textures\\skytexture.bmp";
 
-DrawObject* sun = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Sun.obj");
-LPTSTR sunSmileTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sunsmile.bmp";
-LPTSTR sunGaspTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\sungasp.bmp";
+DrawObject* sun = new DrawObject(".\\models\\Sun.obj");
+LPTSTR sunSmileTexture = L".\\textures\\sunsmile.bmp";
+LPTSTR sunGaspTexture = L".\\textures\\sungasp.bmp";
 
-CollisionObject* swimmer = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Swimmer.obj", 2);
-LPTSTR swimmerTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\swimmertexture.bmp";
+CollisionObject* swimmer = new CollisionObject(".\\models\\Swimmer.obj", 2);
+LPTSTR swimmerTexture = L".\\textures\\swimmertexture.bmp";
 
-CollisionObject* monster = new CollisionObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\monster.obj",2);
-LPTSTR monsterTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\beachball.bmp";
+CollisionObject* monster = new CollisionObject(".\\models\\monster.obj",2);
+LPTSTR monsterTexture = L".\\textures\\beachball.bmp";
 
-DrawObject* trees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\Trees.obj");
-LPTSTR treesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\treestexture.bmp";
+DrawObject* trees = new DrawObject(".\\models\\Trees.obj");
+LPTSTR treesTexture = L".\\textures\\treestexture.bmp";
 
-DrawObject* backTrees = new DrawObject("C:\\Users\\Ryan\\Documents\\DolphinAttack\\models\\BackTrees.obj");
-LPTSTR backTreesTexture = L"C:\\Users\\Ryan\\Documents\\DolphinAttack\\textures\\backtreestexture.bmp";
+DrawObject* backTrees = new DrawObject(".\\models\\BackTrees.obj");
+LPTSTR backTreesTexture = L".\\textures\\backtreestexture.bmp";
 
 GLuint titleTextID;
 GLuint creditsTextID;
@@ -219,7 +219,7 @@ bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
 
 void startBackgroundMusic(){
 	// play some sound stream, looped
-	engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\musicLoop.wav", true);
+	engine->play2D(".\\audio\\musicLoop.wav", true);
 }
 
 void playSplashSound()
@@ -406,10 +406,10 @@ int main(int argc, char* argv[]){
 		return 0; // error starting up the engine
 	}
 
-	splashes[0] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash1.wav", ESM_AUTO_DETECT, true);
-	splashes[1] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash2.wav", ESM_AUTO_DETECT, true);
-	splashes[2] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash3.wav", ESM_AUTO_DETECT, true);
-	splashes[3] = engine->addSoundSourceFromFile("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\splash4.wav", ESM_AUTO_DETECT, true);
+	splashes[0] = engine->addSoundSourceFromFile(".\\audio\\splash1.wav", ESM_AUTO_DETECT, true);
+	splashes[1] = engine->addSoundSourceFromFile(".\\audio\\splash2.wav", ESM_AUTO_DETECT, true);
+	splashes[2] = engine->addSoundSourceFromFile(".\\audio\\splash3.wav", ESM_AUTO_DETECT, true);
+	splashes[3] = engine->addSoundSourceFromFile(".\\audio\\splash4.wav", ESM_AUTO_DETECT, true);
 
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
@@ -861,7 +861,7 @@ GLvoid DrawGLScene()
 
 	if (IsCollision() && !InGameOverScene)
 	{
-		engine->play2D("C:\\Users\\Ryan\\Documents\\DolphinAttack\\audio\\dolphinlaugh.wav");
+		engine->play2D(".\\audio\\dolphinlaugh.wav");
 		IncrementScore();
 		sunTextID = sunGaspTextID;
 		startTimer(1, 1);
