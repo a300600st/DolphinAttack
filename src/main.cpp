@@ -114,11 +114,15 @@ LPTSTR treesTexture = L"textures\\treestexture.bmp";
 DrawObject* backTrees = new DrawObject("models\\BackTrees.obj");
 LPTSTR backTreesTexture = L"textures\\backtreestexture.bmp";
 
-DrawObject* seagull = new DrawObject("models\\Seagull.obj");
 LPTSTR seagullTexture = L"textures\\seagulltexture.bmp";
 
-DrawObject* seagullRWing = new DrawObject("models\\Wing.obj");
-DrawObject* seagullLWing = new DrawObject("models\\Wing.obj");
+DrawObject* seagullA = new DrawObject("models\\Seagull.obj");
+DrawObject* seagullARWing = new DrawObject("models\\RWing.obj");
+DrawObject* seagullALWing = new DrawObject("models\\LWing.obj");
+
+DrawObject* seagullB = new DrawObject("models\\Seagull.obj");
+DrawObject* seagullBRWing = new DrawObject("models\\RWing.obj");
+DrawObject* seagullBLWing = new DrawObject("models\\LWing.obj");
 
 Animation* splashAnimation;
 
@@ -199,8 +203,13 @@ ISoundEngine* engine;
 ISoundSource* splashSounds[NUM_SPLASH_SOUNDS];
 bool splashSoundPlaying;
 
-bool seagullFlapping;
-float seagullAngle;
+#define SEAGULL_A_HEIGHT 15
+#define SEAGULL_B_HEIGHT 25
+
+bool seagullAFlapping;
+float seagullAAngle;
+float seagullBAngle;
+bool seagullBFlapping;
 
 GLvoid InitGL(GLvoid);
 GLvoid DrawGLScene(GLvoid);
@@ -215,7 +224,6 @@ void IncrementScore();
 void LaunchMenu();
 void GameOver();
 void NewSwimmerPosition();
-void updateValues();
 void ShowCredits();
 bool IsCollision();
 void PlayGame();
@@ -226,9 +234,19 @@ bool hitMonster();
 
 GLFWwindow* window;
 
+//timer constants
 #define NUM_TIMERS 7
+
+#define TIMER_TICK 0
+#define SUN_GASP 1
+#define LAUNCH_MENU 2
+#define SHOW_CREDITS 3
+#define SEAGULL_A 4
+#define SEAGULL_B 5
+#define SPLASH_PLAYING 6
+
 double timerValues[NUM_TIMERS];
-bool timerActive[NUM_TIMERS] = {false, false, false};
+bool timerActive[NUM_TIMERS] = {false, false, false, false, false, false, false};
 
 #ifdef WIN32
 bool NeHeLoadBitmap(LPTSTR szFileName, GLuint &texid, bool alpha);
@@ -243,7 +261,7 @@ void playSplashSound()
 {
 	ISoundSource* splash = splashSounds[rand() % NUM_SPLASH_SOUNDS];
 	engine->play2D(splash);
-	startTimer(1, 6);
+	startTimer(1, SPLASH_PLAYING);
 	splashSoundPlaying = true;
 }
 
@@ -309,9 +327,9 @@ static void tickTimer(double timeDiff)
 			timerValues[i] -= timeDiff;
 	}
 
-	if (timerValues[0] <= 0 && timerActive[0])
+	if (timerValues[TIMER_TICK] <= 0 && timerActive[TIMER_TICK])
 	{
-		timerActive[0] = false;
+		timerActive[TIMER_TICK] = false;
 		if (!InMainMenu && !InVictoryScene && !InGameOverScene && !InCredits)
 		{
 			timeLeft--;
@@ -319,7 +337,7 @@ static void tickTimer(double timeDiff)
 			
 			if(timeLeft > 0)
 			{
-				startTimer(1, 0);
+				startTimer(1, TIMER_TICK);
 			}
 			else
 			{
@@ -328,42 +346,43 @@ static void tickTimer(double timeDiff)
 		}
 	}
 	
-	if (timerValues[1] <= 0 && timerActive[1])
+	if (timerValues[SUN_GASP] <= 0 && timerActive[SUN_GASP])
 	{
-		timerActive[1] = false;
+		timerActive[SUN_GASP] = false;
 		sunTextID = sunSmileTextID;
 	}
 
-	if (timerValues[2] <= 0 && timerActive[2])
+	if (timerValues[LAUNCH_MENU] <= 0 && timerActive[LAUNCH_MENU])
 	{
-		timerActive[2] = false;
+		timerActive[LAUNCH_MENU] = false;
 		if (InCredits || InGameOverScene || InVictoryScene)
 			LaunchMenu();
 	}
 
-	if (timerValues[3] <= 0 && timerActive[3])
+	if (timerValues[SHOW_CREDITS] <= 0 && timerActive[SHOW_CREDITS])
 	{
-		timerActive[3] = false;
+		timerActive[SHOW_CREDITS] = false;
 		ShowCredits();
-		startTimer(14, 2);
+		startTimer(14, LAUNCH_MENU);
 	}
 
-	if (timerValues[4] <= 0 && timerActive[4])
+	if (timerValues[SEAGULL_A] <= 0 && timerActive[SEAGULL_A])
 	{
-		timerActive[4] = false;
-		seagullFlapping = false;
-		startTimer(3, 5);
+		timerActive[SEAGULL_A] = false;
+		seagullAFlapping = !seagullAFlapping;
+		startTimer(2 + 7*((float)rand() / RAND_MAX), SEAGULL_B);
 	}
 
-	if (timerValues[5] <= 0 && timerActive[5])
+	if (timerValues[SEAGULL_B] <= 0 && timerActive[SEAGULL_B])
 	{
-		timerActive[5] = false;
-		seagullFlapping = true;
-		startTimer(3.5, 4);
+		timerActive[SEAGULL_B] = false;
+		seagullBFlapping = !seagullBFlapping;
+		startTimer(2 + 7*((float)rand() / RAND_MAX), SEAGULL_A);
 	}
 
-	if (timerValues[6] <= 0 && timerActive[6])
+	if (timerValues[SPLASH_PLAYING] <= 0 && timerActive[SPLASH_PLAYING])
 	{
+		timerActive[SPLASH_PLAYING] = false;
 		splashSoundPlaying = false;
 	}
 }
@@ -541,14 +560,22 @@ void PlayGame(){
 	swimmer->bobbMid = -11.6;
 	swimmer->bobbPeriod = 2.5;
 	swimmer->bobbAngle = 2.5;
-	seagullAngle = 0;
-	seagull->rotation.y = 0;
-	seagull->scale = Vector3f(40, 40, 40);
-	seagull->bobbPeriod = .7;
-	seagullLWing->scale = Vector3f(-1, 1, 1);
-	seagull->rotation.z = 20;
+
+	seagullAAngle = 0;
+	seagullA->rotation.y = 0;
+	seagullA->scale = Vector3f(40, 40, 40);
+	seagullA->bobbPeriod = .7;
+	seagullA->rotation.z = 20;
+	seagullAFlapping = true;
+
+	seagullBAngle = 0;
+	seagullB->rotation.y = 180;
+	seagullB->scale = Vector3f(40, 40, 40);
+	seagullB->bobbPeriod = .7;
+	seagullB->rotation.z = -20;
+	seagullBFlapping = false;
+
 	trees->translation = Vector3f(0, -220 , -6.9);
-	seagullFlapping = true;
 	trees->scale = Vector3f(120, 120, 120);
 	backTrees->translation = Vector3f(0, -220 , -6.9);
 	backTrees->scale = Vector3f(120, 120, 120);
@@ -565,8 +592,9 @@ void PlayGame(){
 	numBox2TextID = number0TextID;
 	numBox3TextID = number0TextID;
 	timeLeft = 120;
-	startTimer(1, 0);
-	startTimer(3.5, 4);
+	startTimer(1, TIMER_TICK);
+	startTimer(3.5, SEAGULL_A);
+	startTimer(5, SEAGULL_B);
 }
 
 GLvoid InitGL(){
@@ -605,6 +633,9 @@ GLvoid InitGL(){
 	gameover->translation = Vector3f(-10, .1, -14);
 	gameover->scale = Vector3f(.6, .6, .6);
 	gameover->rotation = Vector3f(90, 270, 0);
+
+	seagullA->translation = Vector3f(0, SEAGULL_A_HEIGHT, 0);
+	seagullB->translation = Vector3f(0, SEAGULL_B_HEIGHT, 0);
 
 	NeHeLoadBitmap(heads14, heads14TextID, true);
 	NeHeLoadBitmap(heads13, heads13TextID, true);
@@ -837,7 +868,7 @@ void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, f
 	object->rotation.x = object->rotation.x + blendFactor * (newAngle - object->rotation.x);
 }
 
-void flySeagull(double timePassed)
+void flySeagull(double timePassed, DrawObject* seagull, DrawObject* seagullRWing, DrawObject* seagullLWing, bool seagullFlapping, float* seagullAngle, int flightDirection, float height, int radius, int offset)
 {
 	if (seagullFlapping)
 	{
@@ -848,20 +879,19 @@ void flySeagull(double timePassed)
 
 		float newZAngle = 18 * sin(seagull->bobbTime / seagull->bobbPeriod * 2 * M_PI);
 		seagullRWing->rotation.z = newZAngle;
-		seagullLWing->rotation.z = newZAngle;
+		seagullLWing->rotation.z = newZAngle * -1;
 
 		float newYAngle = -1 * 6 - 9 * sin(seagull->bobbTime / seagull->bobbPeriod * 2 * M_PI);
 		seagullRWing->rotation.y = newYAngle;
-		seagullLWing->rotation.y = newYAngle;
+		seagullLWing->rotation.y = newYAngle * -1;
 
-		seagull->translation.y = .5 * sin(seagull->bobbTime / seagull->bobbPeriod * 2 * M_PI);
+		seagull->translation.y = height + .5 * sin(seagull->bobbTime / seagull->bobbPeriod * 2 * M_PI);
 	}
 
-	int radius = 250;
 	float fullCircleTime = 20;
-	seagullAngle += timePassed/fullCircleTime * 2 * M_PI;
-	seagull->translation = Vector3f(radius * cos(seagullAngle), 15, radius * sin(seagullAngle));
-	seagull->rotation.y -= timePassed/fullCircleTime * 360;
+	*seagullAngle += flightDirection * timePassed/fullCircleTime * 2 * M_PI;
+	seagull->translation = Vector3f(radius * cos(*seagullAngle) + offset, seagull->translation.y, radius * sin(*seagullAngle));
+	seagull->rotation.y -= flightDirection * timePassed/fullCircleTime * 360;
 }
 
 void updateValues(double timePassed)
@@ -873,7 +903,8 @@ void updateValues(double timePassed)
 
 	moveDolphin(timePassed);
 	bob(swimmer, timePassed, swimmer->bobbMid, swimmer->bobbSize, swimmer->bobbAngle, swimmer->bobbPeriod);
-	flySeagull(timePassed);
+	flySeagull(timePassed, seagullA, seagullARWing, seagullALWing, seagullAFlapping, &seagullAAngle, 1, SEAGULL_A_HEIGHT, 250, 200);
+	flySeagull(timePassed, seagullB, seagullBRWing, seagullBLWing, seagullBFlapping, &seagullBAngle, -1, SEAGULL_B_HEIGHT, 175, -100);
 	splashAnimation->play(timePassed);
 }
 
@@ -970,7 +1001,7 @@ GLvoid DrawGLScene()
 		engine->play2D("audio\\dolphinlaugh.wav");
 		IncrementScore();
 		sunTextID = sunGaspTextID;
-		startTimer(1, 1);
+		startTimer(1, SUN_GASP);
 	}
 
 	/*if (hitMonster())
@@ -1039,14 +1070,26 @@ GLvoid DrawGLScene()
 			glPopMatrix();
 
 			glPushMatrix();
-				draw(seagull, seagullTextID);
+				draw(seagullA, seagullTextID);
 
 				glPushMatrix();
-					draw(seagullRWing, seagullTextID);
+					draw(seagullARWing, seagullTextID);
 				glPopMatrix();
 
 				glPushMatrix();
-					draw(seagullLWing, seagullTextID);
+					draw(seagullALWing, seagullTextID);
+				glPopMatrix();
+			glPopMatrix();
+
+			glPushMatrix();
+				draw(seagullB, seagullTextID);
+
+				glPushMatrix();
+					draw(seagullBRWing, seagullTextID);
+				glPopMatrix();
+
+				glPushMatrix();
+					draw(seagullBLWing, seagullTextID);
 				glPopMatrix();
 			glPopMatrix();
 
@@ -1136,8 +1179,8 @@ bool hitMonster()
 void NewSwimmerPosition()
 {
 	float newSpawnSeparation = 300;
-	int maxDistance = 690;
-	float distFromOldPosition;
+	int maxDistance = 670;
+	float distFromDolphinPosition;
 	float faceAngle;
 	float newX;
 	float newZ;
@@ -1148,9 +1191,9 @@ void NewSwimmerPosition()
 		int distance = rand() % maxDistance;
 		newX = distance * cos(angle);
 		newZ = distance * sin(angle);
-		distFromOldPosition = sqrt(pow(swimmer->translation.x - newX, 2) + pow(swimmer->translation.z - newZ, 2));
+		distFromDolphinPosition = sqrt(pow(dolphin->translation.x - newX, 2) + pow(dolphin->translation.z - newZ, 2));
 	}
-	while (distFromOldPosition < newSpawnSeparation);
+	while (distFromDolphinPosition < newSpawnSeparation);
 
 	swimmer->translation = Vector3f(newX, -12.65, newZ);
 	swimmer->rotation.y = faceAngle;
@@ -1159,13 +1202,13 @@ void NewSwimmerPosition()
 void Victory()
 {
 	InVictoryScene = true;
-	startTimer(5, 3);
+	startTimer(5, SHOW_CREDITS);
 }
 
 void GameOver()
 {
 	InGameOverScene = true;
-	startTimer(5, 2);
+	startTimer(5, LAUNCH_MENU);
 }
 
 void updateSwimmerHeads(){
