@@ -15,7 +15,7 @@ void Animation::play(double timePassed)
 	if (!finished)
 		time += timePassed;
 
-	while (time > timePerFrame * curFrame)
+	while (time > timePerFrame * (curFrame + 1))
 	{
 		if (curFrame == numFrames - 1)
 		{
