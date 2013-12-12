@@ -6,6 +6,7 @@
 #define _USE_MATH_DEFINES
 #include "DrawObject.h"
 #include "CollisionObject.h"
+#include "Animation.h"
 #include <string>
 #include <cmath>
 #include <iostream>
@@ -38,13 +39,6 @@ int windowHeight = DEFAULT_WINDOW_HEIGHT;
 char* windowName = "My Glut Window";
 int texID = 0;
 
-/*
-	CHECK YOUR EMAIL BEFORE USING THESE! I FIXED RELATIVE PATHS
-*/
-// C:\\Users\\Ben Romney\\Documents\\GitHub\\DolphinAttack
-// C:\\Users\\Todd\\Desktop\\Fall 2013\\groupDolphin attack\\BaseGlutOpenGL
-// C:\\Users\\Ryan\\Documents\\DolphinAttack
-
 DrawObject* title = new DrawObject("models\\Title.obj");
 LPTSTR titleTexture = L"textures\\titletexture.bmp";
 DrawObject* creditsScroll = new DrawObject("models\\CreditsScroll.obj");
@@ -72,6 +66,14 @@ LPTSTR heads3 = L"textures\\heads3.bmp";
 LPTSTR heads2 = L"textures\\heads2.bmp";
 LPTSTR heads1 = L"textures\\heads1.bmp";
 LPTSTR heads0 = L"textures\\heads0.bmp";
+
+DrawObject* splash = new DrawObject("models\\Splash.obj");
+LPTSTR splashTexture = L"textures\\splash.bmp";
+LPTSTR splashFrame0 = L"textures\\splash1.bmp";
+LPTSTR splashFrame1 = L"textures\\splash2.bmp";
+LPTSTR splashFrame2 = L"textures\\splash3.bmp";
+LPTSTR splashFrame3 = L"textures\\splash4.bmp";
+LPTSTR splashFrame4 = L"textures\\splash5.bmp";
 
 DrawObject* numBox1 = new DrawObject("models\\NumberBox.obj");
 DrawObject* colonBox = new DrawObject("models\\NumberBox.obj");
@@ -123,6 +125,8 @@ LPTSTR seagullTexture = L"textures\\seagulltexture.bmp";
 DrawObject* seagullRWing = new DrawObject("models\\Wing.obj");
 DrawObject* seagullLWing = new DrawObject("models\\Wing.obj");
 
+Animation* splashAnimation;
+
 GLuint titleTextID;
 GLuint creditsTextID;
 GLuint creditsScrollTextID;
@@ -170,6 +174,8 @@ GLuint treesTextID;
 GLuint backTreesTextID;
 GLuint monsterTextID;
 GLuint seagullTextID;
+GLuint splashTextID;
+GLuint splashFrames[5];
 
 bool keyLeft;
 bool keyRight;
@@ -195,7 +201,8 @@ int timeLeft;
 
 ISoundEngine* engine;
 #define NUM_SPLASH_SOUNDS 4
-ISoundSource* splashes[NUM_SPLASH_SOUNDS];
+ISoundSource* splashSounds[NUM_SPLASH_SOUNDS];
+bool splashSoundPlaying;
 
 bool seagullFlapping;
 float seagullAngle;
@@ -219,10 +226,11 @@ bool IsCollision();
 void PlayGame();
 void updateValues(double);
 void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, float bobbAngle, float bobbPeriod);
+void startTimer(double, int);
 
 GLFWwindow* window;
 
-#define NUM_TIMERS 6
+#define NUM_TIMERS 7
 double timerValues[NUM_TIMERS];
 bool timerActive[NUM_TIMERS] = {false, false, false};
 bool hitMonster();
@@ -238,8 +246,10 @@ void startBackgroundMusic(){
 
 void playSplashSound()
 {
-	ISoundSource* splash = splashes[rand() % NUM_SPLASH_SOUNDS];
+	ISoundSource* splash = splashSounds[rand() % NUM_SPLASH_SOUNDS];
 	engine->play2D(splash);
+	startTimer(1, 6);
+	splashSoundPlaying = true;
 }
 
 void updateTimeTextures(){
@@ -356,6 +366,11 @@ static void tickTimer(double timeDiff)
 		seagullFlapping = true;
 		startTimer(3.5, 4);
 	}
+
+	if (timerValues[6] <= 0 && timerActive[6])
+	{
+		splashSoundPlaying = false;
+	}
 }
 
 static void error_callback(int error, const char* description)
@@ -434,10 +449,10 @@ int main(int argc, char* argv[]){
 		return 0; // error starting up the engine
 	}
 
-	splashes[0] = engine->addSoundSourceFromFile("audio\\splash1.wav", ESM_AUTO_DETECT, true);
-	splashes[1] = engine->addSoundSourceFromFile("audio\\splash2.wav", ESM_AUTO_DETECT, true);
-	splashes[2] = engine->addSoundSourceFromFile("audio\\splash3.wav", ESM_AUTO_DETECT, true);
-	splashes[3] = engine->addSoundSourceFromFile("audio\\splash4.wav", ESM_AUTO_DETECT, true);
+	splashSounds[0] = engine->addSoundSourceFromFile("audio\\splash1.wav", ESM_AUTO_DETECT, true);
+	splashSounds[1] = engine->addSoundSourceFromFile("audio\\splash2.wav", ESM_AUTO_DETECT, true);
+	splashSounds[2] = engine->addSoundSourceFromFile("audio\\splash3.wav", ESM_AUTO_DETECT, true);
+	splashSounds[3] = engine->addSoundSourceFromFile("audio\\splash4.wav", ESM_AUTO_DETECT, true);
 
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
@@ -445,9 +460,7 @@ int main(int argc, char* argv[]){
 
 	glfwSwapInterval(1);
 
-	//fullscreen:
 	window = glfwCreateWindow(windowWidth, windowHeight, "Happy Dolphin Attack", glfwGetPrimaryMonitor(), NULL);
-	//window = glfwCreateWindow(windowWidth, windowHeight, "Happy Dolphin Attack", NULL, NULL);
 	glfwSetWindowPos(window, 50, 50);
 
     if (!window)
@@ -544,6 +557,8 @@ void PlayGame(){
 	trees->scale = Vector3f(120, 120, 120);
 	backTrees->translation = Vector3f(0, -220 , -6.9);
 	backTrees->scale = Vector3f(120, 120, 120);
+	splash->translation = Vector3f(0, -10, -40);
+	splashSoundPlaying = false;
 
 	monster->translation = Vector3f(0,4.5,880);
 	monster->rotation = Vector3f(0,180,0);
@@ -653,23 +668,32 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(backTreesTexture, backTreesTextID, true);
 	NeHeLoadBitmap(monsterTexture,monsterTextID,false);
 	NeHeLoadBitmap(seagullTexture,seagullTextID,false);
+
+	NeHeLoadBitmap(splashFrame0,splashFrames[0],true);
+	NeHeLoadBitmap(splashFrame1,splashFrames[1],true);
+	NeHeLoadBitmap(splashFrame2,splashFrames[2],true);
+	NeHeLoadBitmap(splashFrame3,splashFrames[3],true);
+	NeHeLoadBitmap(splashFrame4,splashFrames[4],true);
+
+	splashAnimation = new Animation(4, 5, splashFrames);
+	splashAnimation->stop();
 }
 
 void moveDolphin(double timePassed){
 	if(InMainMenu || InCredits)
 		return;
 	int maxDistance = 770;
-	float backwardAcceleration = 6;
-	float forwardAcceleration = 8;
-	float angAcceleration = 3;
+	float backwardAcceleration = 200 * timePassed;
+	float forwardAcceleration = 550 * timePassed;
+	float angAcceleration = 130 * timePassed;
 	float maxVel = 250;
 	float minVel = -40;
-	float maxAngVel = 75;
-	float decceleration = .98;
-	float angDecceleration = .9;
-	float bankDecceleration = .93;
+	float maxAngVel = 80;
+	float decceleration = 130 * timePassed;
+	float angDecceleration = 200 * timePassed;
+	float bankDecceleration = 80 * timePassed;
 	float maxBank = 25;
-	float bankSpeed = 70;
+	float bankSpeed = 70 * timePassed;
 	float slowestTurnScale = .25;
 	float maxBobVelocity = 200;
 
@@ -696,17 +720,28 @@ void moveDolphin(double timePassed){
 	if (keyLeft)
 	{
 		if (dolphin->rotation.z > maxBank * -1)
-			dolphin->rotation.z -= bankSpeed * timePassed;
+			dolphin->rotation.z -= bankSpeed;
 	}
 	else if (keyRight)
 	{
 		if (dolphin->rotation.z < maxBank)
-			dolphin->rotation.z += bankSpeed * timePassed;
+			dolphin->rotation.z += bankSpeed;
 	}
 	else
 	{
-		dolphin->angVelocity *= angDecceleration;
-		dolphin->rotation.z *= bankDecceleration;
+		if (dolphin->angVelocity > .01)
+			dolphin->angVelocity -= min(angDecceleration, dolphin->angVelocity);
+		else if (dolphin->angVelocity < -.01)
+			dolphin->angVelocity += max(angDecceleration, dolphin->angVelocity);
+		else
+			dolphin->angVelocity = 0;
+
+		if (dolphin->rotation.z > .01)
+			dolphin->rotation.z -= min(bankDecceleration, dolphin->rotation.z);
+		else if (dolphin->rotation.z < -.01)
+			dolphin->rotation.z += max(bankDecceleration, dolphin->rotation.z);
+		else
+			dolphin->rotation.z = 0;
 	}
 
 	if(keyUp)
@@ -716,7 +751,7 @@ void moveDolphin(double timePassed){
 	}
 	else if (dolphin->velocity > 0)
 	{
-		dolphin->velocity *= decceleration;
+		dolphin->velocity -= min(decceleration, dolphin->velocity);
 	}
 
 	if(keyDown)
@@ -726,7 +761,7 @@ void moveDolphin(double timePassed){
 	}
 	else if (dolphin->velocity < 0)
 	{
-		dolphin->velocity *= decceleration;
+		dolphin->velocity += max(decceleration, dolphin->velocity);
 	}
 
 	float velocityScale = abs(dolphin->velocity / maxVel);
@@ -734,6 +769,7 @@ void moveDolphin(double timePassed){
 	float turnAmount = dolphin->angVelocity * timePassed * max(slowestTurnScale, velocityScale);
 	rotY += -turnAmount;
 	dolphin->rotation.y += turnAmount;
+	splash->rotation.y += turnAmount;
 
 	float zMove = dolphin->velocity * cos(dolphin->rotation.y * M_PI / 180) * timePassed;
 	float xMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180) * timePassed;
@@ -749,6 +785,8 @@ void moveDolphin(double timePassed){
 		sky->translation.x += xMove;
 		sun->translation.z += zMove;
 		sun->translation.x += xMove;
+		splash->translation.z += zMove;
+		splash->translation.x += xMove;
 	}
 
 	//bobbing
@@ -771,8 +809,11 @@ void moveDolphin(double timePassed){
 
 	bob(dolphin, timePassed, dolphin->bobbMid, dolphin->bobbSize, dolphin->bobbAngle, dolphin->bobbPeriod);
 
-	if (timeBefore < splashPoint && dolphin->bobbTime > splashPoint && velocityScale > .75)
+	if (timeBefore < splashPoint && dolphin->bobbTime > splashPoint && velocityScale > .75 & !splashSoundPlaying)
+	{
 		playSplashSound();
+		//splashAnimation->restart();
+	}
 }
 
 void bob(DrawObject* object, double timePassed, float bobbMid, float bobbSize, float bobbAngle, float bobbPeriod)
@@ -837,6 +878,7 @@ void updateValues(double timePassed)
 	moveDolphin(timePassed);
 	bob(swimmer, timePassed, swimmer->bobbMid, swimmer->bobbSize, swimmer->bobbAngle, swimmer->bobbPeriod);
 	flySeagull(timePassed);
+	splashAnimation->play(timePassed);
 }
 
 void draw(DrawObject * object, GLuint textID)
@@ -1031,6 +1073,13 @@ GLvoid DrawGLScene()
 			glPushMatrix();
 			draw(water, waterTextID);
 			glPopMatrix();
+
+			if (!(splashAnimation->isFinished()))
+			{
+				glPushMatrix();
+				draw(splash, splashAnimation->getFrame());
+				glPopMatrix();
+			}
 
 		glPopMatrix();
 

@@ -1,5 +1,4 @@
 #include "CollisionObject.h"
-#include <iostream>
 
 CollisionObject::CollisionObject(char* fileName, int* rotationOrder, float bound)
 	: DrawObject(fileName, rotationOrder)
