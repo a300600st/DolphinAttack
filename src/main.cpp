@@ -66,12 +66,9 @@ LPTSTR heads1 = L"textures\\heads1.bmp";
 LPTSTR heads0 = L"textures\\heads0.bmp";
 
 DrawObject* splash = new DrawObject("models\\Splash.obj");
-LPTSTR splashTexture = L"textures\\splash.bmp";
-LPTSTR splashFrame0 = L"textures\\splash1.bmp";
-LPTSTR splashFrame1 = L"textures\\splash2.bmp";
-LPTSTR splashFrame2 = L"textures\\splash3.bmp";
-LPTSTR splashFrame3 = L"textures\\splash4.bmp";
-LPTSTR splashFrame4 = L"textures\\splash5.bmp";
+LPTSTR splashFrame0 = L"textures\\splash0.bmp";
+LPTSTR splashFrame1 = L"textures\\splash1.bmp";
+LPTSTR splashFrame2 = L"textures\\splash2.bmp";
 
 DrawObject* numBox1 = new DrawObject("models\\NumberBox.obj");
 DrawObject* colonBox = new DrawObject("models\\NumberBox.obj");
@@ -173,7 +170,7 @@ GLuint backTreesTextID;
 GLuint monsterTextID;
 GLuint seagullTextID;
 GLuint splashTextID;
-GLuint splashFrames[5];
+GLuint splashFrames[3];
 
 bool keyLeft;
 bool keyRight;
@@ -555,7 +552,7 @@ void PlayGame(){
 	trees->scale = Vector3f(120, 120, 120);
 	backTrees->translation = Vector3f(0, -220 , -6.9);
 	backTrees->scale = Vector3f(120, 120, 120);
-	splash->translation = Vector3f(0, -10, -40);
+	splash->translation = Vector3f(0, -11, -40);
 	splashSoundPlaying = false;
 
 	monster->translation = Vector3f(0,4.5,880);
@@ -670,10 +667,8 @@ GLvoid InitGL(){
 	NeHeLoadBitmap(splashFrame0,splashFrames[0],true);
 	NeHeLoadBitmap(splashFrame1,splashFrames[1],true);
 	NeHeLoadBitmap(splashFrame2,splashFrames[2],true);
-	NeHeLoadBitmap(splashFrame3,splashFrames[3],true);
-	NeHeLoadBitmap(splashFrame4,splashFrames[4],true);
 
-	splashAnimation = new Animation(4, 5, splashFrames);
+	splashAnimation = new Animation(12, 3, splashFrames);
 	splashAnimation->stop();
 }
 
@@ -767,7 +762,7 @@ void moveDolphin(double timePassed){
 	float turnAmount = dolphin->angVelocity * timePassed * max(slowestTurnScale, velocityScale);
 	rotY += -turnAmount;
 	dolphin->rotation.y += turnAmount;
-	splash->rotation.y += turnAmount;
+	//splash->rotation.y += turnAmount;
 
 	float zMove = dolphin->velocity * cos(dolphin->rotation.y * M_PI / 180) * timePassed;
 	float xMove = dolphin->velocity * sin(dolphin->rotation.y * M_PI / 180) * timePassed;
@@ -783,8 +778,8 @@ void moveDolphin(double timePassed){
 		sky->translation.x += xMove;
 		sun->translation.z += zMove;
 		sun->translation.x += xMove;
-		splash->translation.z += zMove;
-		splash->translation.x += xMove;
+		//splash->translation.z += zMove;
+		//splash->translation.x += xMove;
 	}
 
 	//bobbing
@@ -810,7 +805,10 @@ void moveDolphin(double timePassed){
 	if (timeBefore < splashPoint && dolphin->bobbTime > splashPoint && velocityScale > .75 & !splashSoundPlaying)
 	{
 		playSplashSound();
-		//splashAnimation->restart();
+		splash->translation.x = dolphin->translation.x;
+		splash->translation.z = dolphin->translation.z;
+		splash->rotation.y = dolphin->rotation.y;
+		splashAnimation->restart();
 	}
 }
 
