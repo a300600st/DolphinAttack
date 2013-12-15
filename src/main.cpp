@@ -362,8 +362,11 @@ static void tickTimer(double timeDiff)
 	if (timerValues[SHOW_CREDITS] <= 0 && timerActive[SHOW_CREDITS])
 	{
 		timerActive[SHOW_CREDITS] = false;
-		ShowCredits();
-		startTimer(14, LAUNCH_MENU);
+		if (InVictoryScene)
+		{
+			ShowCredits();
+			startTimer(14, LAUNCH_MENU);
+		}
 	}
 
 	if (timerValues[SEAGULL_A] <= 0 && timerActive[SEAGULL_A])
@@ -709,16 +712,16 @@ void moveDolphin(double timePassed){
 	int maxDistance = 770;
 	float backwardAcceleration = 200 * timePassed;
 	float forwardAcceleration = 550 * timePassed;
-	float angAcceleration = 130 * timePassed;
+	float angAcceleration = 280* timePassed;
 	float maxVel = 250;
 	float minVel = -40;
 	float maxAngVel = 80;
 	float decceleration = 130 * timePassed;
-	float angDecceleration = 200 * timePassed;
+	float angDecceleration = 280 * timePassed;
 	float bankDecceleration = 80 * timePassed;
 	float maxBank = 25;
 	float bankSpeed = 70 * timePassed;
-	float slowestTurnScale = .25;
+	float slowestTurnScale = .50;
 	float maxBobVelocity = 200;
 
 	if (InGameOverScene || InVictoryScene)
